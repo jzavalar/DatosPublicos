@@ -1,0 +1,829 @@
+---
+title: "Probabilidad Condicional"
+author: "Dr. rer. nat. Humberto LLinás Solano"
+date: "2023-09-18"
+output: html_document
+source: https://rpubs.com/hllinas/R_Prob_Condicional
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Probabilidad condicional
+
+Dr. rer. nat. Humberto LLinás Solano
+Departamento de Matemáticas y Estadística, Universidad del Norte (Barranquilla, Colombia)
+
+hllinas@uninorte.edu.co
+
+26/08/21
+
+### Abstract
+
+La teoría mencionada puede revisarse en el capítulo 2 de mis notas de clase que aparecen en el siguiente documento: 1.1. Estadística básica. En Rpubs:: toc se pueden ver otros documentos de posible interés.
+
+hllinas
+
+### 0 Preparación del entorno
+
+El paquete `prob` ha ido archivado, por lo que no está disponible para su instalación desde CRAN. Sin embargo, es posible instalarlo desde GitHub con el paquete `remotes`. Ejecute el script: 
+
+Adicionalmente, se instalan tres paquetes más, `devtools`, `repmis` y `rio`, con las siguientes instrucciones:
+
+```
+install.packages("devtools")
+devtools::install_github('christophergandrud/repmis')
+```
+
+Se preparan los datos locales:
+
+```
+install.packages("rio")
+install_formats()
+source_data("https://github.com/hllinas/DatosPublicos/blob/main/Estudiantes.Rdata?raw=false")
+datosCompleto <- Estudiantes
+
+# cargar paquete rio
+library(rio)
+
+# exportar dataframe en memoria
+export(datosCompleto,"./Estudiantes.Rdata")
+export(datosCompleto,"./clipboard.csv")
+export(datosCompleto,"./Estudiantes.Rdata")
+export(datosCompleto,"./clipboard.csv")
+
+# cambiar el nombre de archivo
+# archivo a renombrar
+archivo <- './clipboard.csv'
+archivo_renombrado <- './clipboard'
+
+# Checa si existe el archivo
+if(file.exists(archivo)){
+  # Renombrar el archivo
+  file.rename(archivo,archivo_renombrado)
+}else{
+  print('Archivo no encontrado :')
+}
+```
+
+
+### 1 Paquetes
+
+En R podemos encontrar diversas funciones para ello:
+
+  “expand.grid” en el paquete “base”.
+  “combn” en el paquete “combinat”.
+  “permsn”, “tosscoin”, etc., en el paquete “prob”.
+
+Para nuestros cálculos, utilizaremos la siguiente librería: `prob`. 
+
+```{r}
+library(prob)   #A) Para calcular probabilidades
+library(dplyr)  #B) Para filtrar data frames
+
+```
+
+Con la carga de estas librerías se enmascaran los siguientes objetos del `package:stats`: `filter`, `lag` y los siguientes objetos del `package:base`: `intersect`, `setdiff`, `setequal`, `union`.
+
+En el paquete `prob`, encontramos la función `prob()`, que nos va a permitir calcular probabilidades. Para la probabilidad condicional, podemos usar el argumento `given` de esta función, pero antes de hacerlo se debe agregar la opción `makespace = TRUE` para generar el espacio muestral.
+
+### 2 Probabilidad condicional
+
+Sean A y B dos eventos de un espacio muestral $\Omega \neq \emptyset$. La probabilidad condicional del evento A dado el evento B, simbolizada por $P(A/B)$, se define como
+
+$$
+P(A/B) \; = \; \frac{P(A \cap B)}{P(B)} \; = \; \frac{(A \cap B)}{B}, \quad \mbox{si  P(B) > 0}
+$$
+
+El código para escribir la expresión anterior es:
+
+```
+$$
+P(A/B) \; = \; \frac{P(A \cap B)}{P(B)} \; = \; \frac{\# (A \cap B)}{\# B}, \quad \mbox{si $P(B) >0$}
+$$
+```
+
+### 3 Teorema de multiplicación para dos eventos
+
+Si A y B son dos eventos de un espacio muestral $\Omega \neq \emptyset$ y si $P(B \cap A)>0$, entonces 
+
+$$
+P(B \cap A)\; = \; P(B/A)\, P(A) \;=\;  P(A/B) \,P(B)
+$$
+
+El código para escribir la expresión anterior es:
+
+```
+$$
+P(B \cap A)\; = \; P(B/A)\, P(A) \;=\;  P(A/B) \,P(B)
+$$
+```
+
+#### 4 Ejemplo 1: Dados (con la definición)
+
+Supongamos que se lanzan tres dados. El objetivo es calcular la probabilidad de que las caras sean iguales sabiendo que su suma es mayor o igual que 17. 
+
+Nuestro espacio muestral correspondiente es:
+
+```{r}
+Omega <- rolldie(3)   #A) Lanzamiento de 3 dados
+nrow(Omega)           #B) Tamaño de Omega
+```
+## [1] 216
+
+Definimos nuestros eventos (el símbolo “&” es el “y” lógico) y su intersección:
+
+```{r}
+A <- subset(Omega, X1 == X2 & X2== X3); A   #C) Evento A
+
+```
+
+##     X1 X2 X3
+## 1    1  1  1
+## 44   2  2  2
+## 87   3  3  3
+## 130  4  4  4
+## 173  5  5  5
+## 216  6  6  6
+
+```{r}
+B <- subset(Omega, X1 + X2 +X3>= 17); B     #D) Evento condicional B
+
+```
+
+##     X1 X2 X3
+## 180  6  6  5
+## 210  6  5  6
+## 215  5  6  6
+## 216  6  6  6
+
+```{r}
+Int <- intersect(A, B); Int                 #E) Intersección de A y B
+
+```
+
+##   X1 X2 X3
+## 1  6  6  6
+
+Por lo tanto, sabiendo que B es el evento condicional, la probabilidad pedida es
+
+```{r}
+nrow(Int)/nrow(B)       #F) Probabilidad condicional con la definición
+
+```
+
+## [1] 0.25
+
+#### 5 Ejemplo 2: Dados (con “given”)
+
+Supongamos que se lanzan tres dados. El objetivo es calcular la probabilidad de que las caras sean iguales sabiendo que su suma es mayor o igual que 17.
+
+SOLUCIÓN: Para calcular la probabilidad condicional, usaremos el argumento “given” de la función “prob”. Pero antes de hacerlo, se debe agregar la opción “makespace = TRUE” para generar el espacio muestral:
+
+```{r}
+Omega <- rolldie(3, makespace = TRUE)   #G) Lanzamiento de 3 dados
+nrow(Omega)                             #H) Tamaño de Omega
+
+```
+
+## [1] 216
+
+Definimos nuestros eventos (el símbolo “&” es el “y” lógico):
+
+```{r}
+A <- subset(Omega, X1 == X2 & X2== X3); A   #I) Evento A
+
+```
+
+##     X1 X2 X3      probs
+## 1    1  1  1 0.00462963
+## 44   2  2  2 0.00462963
+## 87   3  3  3 0.00462963
+## 130  4  4  4 0.00462963
+## 173  5  5  5 0.00462963
+## 216  6  6  6 0.00462963
+
+```{r}
+B <- subset(Omega, X1 + X2 +X3>= 17); B     #J) Evento condicional B
+
+```
+
+##     X1 X2 X3      probs
+## 180  6  6  5 0.00462963
+## 210  6  5  6 0.00462963
+## 215  5  6  6 0.00462963
+## 216  6  6  6 0.00462963
+
+Por lo tanto, sabiendo que B es el evento condicional, la probabilidad pedida es
+
+```{r}
+Prob(A, given = B)       #K) Probabilidad condicional con "given"
+
+```
+## [1] 0.25
+
+#### 6 Ejemplo (con base de datos)
+##### 6.1 Ejemplo 3: El data frame
+
+Los siguientes datos representan los resultados obtenidos al realizar una encuesta a 400 estudiantes universitarios. En este documento, se importará la base de datos desde una dirección web (dos opciones):
+
+Opción A (web, desde github): Para esta opción, se necesita cargar la librería “repmis”:
+
+```{r}
+library(repmis)
+source_data("https://github.com/hllinas/DatosPublicos/blob/main/Estudiantes.Rdata?raw=false")
+datosCompleto <- Estudiantes
+```
+
+Opción B (web, desde Google Drive):
+
+```{r}
+url.dat<- "http://bit.ly/Database-Estudiantes"
+datosCompleto <- read.delim(url.dat)
+
+datosCompleto <- read.delim(file='./clipboard', header=TRUE)
+
+
+```
+
+
+```{r}
+url.dat<- "http://bit.ly/Database-Estudiantes"
+datosCompleto <- read.delim(url.dat)
+```
+
+
+Recuérdense las otras opciones, si tienen las bases de datos descargadas en su sesión de trabajo (ya sea en extensiones en Rdata, en excel o en otros formatos). Para más detalles, véase el documento R básico. A manera de ejemplo:
+
+Previamente debe crearse el archivo:
+
+`url.dat<- "http://bit.ly/Database-Estudiantes"`
+`datosCompleto <- read.delim(url.dat)`
+`library(rio)`
+`install_formats()`
+`export(datosCompleto,"./Estudiantes.Rdata")`
+
+
+Opción C (local, con archivo en Rdata):
+```{r}
+load(file="./Estudiantes.Rdata")
+datosCompleto <- Estudiantes
+datosCompleto <- x
+```
+
+
+Opción D (local, con archivo en excel):
+
+```{r}
+datosCompleto <- read.delim('clipboard')
+
+```
+
+El objetivo es utilizar esta información para calcular probabilidades condicionales. Para ello, nos ayudaremos de la definición de probabilidad clásica. Es decir, probablidades de la forma:
+P(A)=Número de elementos de ANúmero de elementos de Ω
+
+##### 6.2 Ejemplo 3: Enunciado
+
+Considere solamente las primeras 100 observaciones. De esta base de datos, tenga solo en cuenta los estudiantes que son fumadores. Supongamos que, al azar, se seleccionan cuatro estudiantes que son fumadores.
+
+a) Defina dos data frames: 
+   - "datos": con las 100 primeras observaciones. Verifique su tamaño.
+   - "datosFuma": obtenido al filtrar "datos" y representa a los estudiantes fumadores. 
+     Verifique su tamaño. 
+b) Defina tres objetos: 
+   - "Fuma": estudiantes que fuman (dentro de "datos"). Conviértalo en factor.
+   - "Sexo": sexo de los estudiantes (dentro de "datos"). Conviértalo en factor.
+   - "SexoF" sexo de los estudiantes (dentro de "datosFuma"). Conviértalo en factor.
+c) Construya dos tablas de frecuencias:
+   - Una tabla de contingencia (cruzada) para Sexo y Fuma.
+   - Una tabla de frecuencias solo para SexoF. Compare con la tabla anterior. 
+d) ¿Cuál es la probabilidad de seleccionar dos mujeres y dos hombres?
+e) Si seleccionan de uno en uno, ¿cuál es la probabilidad de que las dos primeras personas 
+   seleccionadas sean mujeres y las dos últimas, hombres. 
+f) ¿Cuál es la probabilidad de seleccionar cuatro mujeres?
+g) ¿Cuál es la probabilidad de seleccionar tres hombres?   
+h) ¿Cuál es la probabilidad de seleccionar cuatro mujeres y tres hombres?
+i) ¿Cuál es la probabilidad de seleccionar cuatro mujeres o tres hombres?
+j) ¿Cuál es la probabilidad de que no seleccionemos hombres?
+k) ¿Cuál es la probabilidad de que seleccionemos un hombre?  
+l) ¿Cuál es la probabilidad de que seleccionemos dos hombres? 
+m) ¿Cuál es la probabilidad de seleccionar máximo dos hombres? 
+n) ¿Cuál es la probabilidad de seleccionar al menos tres hombres?
+o) ¿Cuál es la probabilidad de seleccionar máximo dos mujeres? 
+p) Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los tres
+   primeros estudiantes seleccionados sean mujeres y el último un hombre?
+q) Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los dos
+   primeros estudiantes seleccionados sean mujeres, el tercero un hombre y el último, una mujer? 
+r) Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los cuatro estudiantes 
+   seleccionados sean mujeres?
+s) Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los dos primeros estudiantes    seleccionados sean mujeres?
+
+#### 6.3 Solución del ejemplo 3
+##### 6.3.1 Solución parte (a)
+
+Filtramos nuestra base de datos:
+
+```{r}
+datos <- datosCompleto[1:100,]    #A) La nueva base de datos
+nrow(datos)                       #B) Número de observaciones
+
+```
+## [1] 100
+
+Ahora volvemos a filtrar el data frame anterior para obtener solamente la información de estudiantes que fuman (se utilizará la librería dplyr):
+
+```{r}
+datosFuma <- datos %>% filter(Fuma=="Si")   #C) Data frame estudiantes que fuman
+nrow(datosFuma)                             #D) Número de observaciones
+
+```
+## [1] 55
+
+##### 6.3.2 Solución parte (b)
+
+Definimos las variables categóricas y revisamos sus niveles:
+
+```{r}
+Fuma <- as.factor(datos$Fuma)         #E) La variable Fuma en "datos"
+levels(Fuma)                          #F) Sus niveles
+
+```
+
+## [1] "No" "Si"
+
+```{r}
+Sexo <- as.factor(datos$Sexo)         #G) La variable Sexo en "datos"
+levels(Sexo)                          #H) Sus niveles
+
+```
+
+## [1] "Femenino"  "Masculino"
+
+```{r}
+SexoF <- as.factor(datosFuma$Sexo)    #I) La variable Sexo en "datosFuma"
+levels(SexoF)                         #J) Sus niveles
+
+```
+
+## [1] "Femenino"  "Masculino"
+
+##### 6.3.3 Solución parte (c)
+
+La tabla de contingencia para Sexo y Fuma es:
+
+```{r}
+xtabs(~Sexo +Fuma, data=datos)         #K) Tabla de contingencia: Sexo vs Fuma
+
+```
+
+##            Fuma
+## Sexo        No Si
+##   Femenino  21 28
+##   Masculino 24 27
+
+La tabla de frecuencias para SexoF es
+
+```{r}
+xtabs(~SexoF, data=datos)         #L) Tabla de frecuencias para SexoF
+
+```
+## SexoF
+##  Femenino Masculino 
+##        28        27
+
+##### 6.3.4 Solución parte (d)
+
+Utilizaremos combinaciones y aplicaremos probabilidad clásica. Tenemos:
+
+```{r}
+Omega <- choose(55, 4); Omega     #M) Tamaño del espacio muestral
+
+```
+
+## [1] 341055
+
+```{r}
+Mujer <- choose(28, 2); Mujer     #N) Combinaciones de las mujeres
+
+```
+
+## [1] 378
+
+```{r}
+Hombre <- choose(27,2); Hombre    #O) Combinaciones de los hombres
+
+```
+
+## [1] 351
+
+La probabilidad de seleccionar dos mujeres y dos hombres es
+P(A)=(378)(351)341055=0.3890
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{(378)(351)}{341055}= 0.3890$$ 
+
+```{r}
+Probabilidad_d <- (Mujer * Hombre)/Omega; Probabilidad_d   #P) Probabilidad pedida
+
+```
+
+## [1] 0.3890223
+
+##### 6.3.5 Solución parte (e)
+
+Utilizaremos permutaciones sin repetición de n
+objetos tomados de k en k:
+
+```{r}
+Omega <- factorial(55)/factorial(55-4); Omega         #Q) Tamaño del espacio muestral
+
+```
+
+## [1] 8185320
+
+```{r}
+Mujer <- factorial(28)/factorial(28-2); Mujer         #R) Permutaciones de las mujeres
+
+```
+
+## [1] 756
+
+```{r}
+Hombre <- factorial(27)/factorial(27-2); Hombre       #S) Permutaciones de los hombres
+
+```
+
+## [1] 702
+
+La probabilidad de que las dos primeras personas seleccionadas sean mujeres y las dos últimas, hombres, es
+P(A)=(756)(702)8185320=0.0648
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{(756)(702)}{8185320}=0.0648$$ 
+
+```{r}
+Probabilidad_e <- (Mujer * Hombre)/Omega; Probabilidad_e   #T) Probabilidad pedida
+
+```
+
+## [1] 0.06483705
+
+##### 6.3.6 Solución parte (f)
+
+Utilizaremos combinaciones y aplicaremos probabilidad clásica. Tenemos:
+
+```{r}
+Omega <- choose(55, 4); Omega     #A) Tamaño del espacio muestral
+
+```
+
+## [1] 341055
+
+```{r}
+Mujer <- choose(28, 4); Mujer     #B) Combinaciones de las mujeres
+
+```
+
+## [1] 20475
+
+La probabilidad de seleccionar cuatro mujeres es
+P(A)=20475341055=0.0600
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{20475}{341055}=0.0600$$
+
+```{r}
+Probabilidad_f <- Mujer/Omega; Probabilidad_f   #C) Probabilidad pedida
+
+```
+
+## [1] 0.06003431
+
+##### 6.3.7 Solución parte (g)
+
+Utilizaremos combinaciones y aplicaremos probabilidad clásica. Tenemos:
+
+```{r}
+Omega <- choose(55, 4); Omega     #D) Tamaño del espacio muestral
+
+```
+
+## [1] 341055
+
+```{r}
+Hombre <- choose(27,3); Hombre    #E) Combinaciones de los hombres
+
+```
+
+## [1] 2925
+
+```{r}
+Mujer <- choose(28, 1); Mujer     #F) Combinaciones de las mujeres
+
+```
+
+## [1] 28
+
+La probabilidad de seleccionar tres hombres es
+P(A)=(2925)(28)341055=0.2401
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{(2925)(28)}{341055}=0.2401$$ 
+
+```{r}
+Probabilidad_g <- (Hombre * Mujer)/Omega; Probabilidad_g   #G) Probabilidad pedida
+
+```
+
+## [1] 0.2401372
+
+##### 6.3.8 Solución parte (h)
+
+La probabilidad de seleccionar cuatro mujeres y tres hombres es 0, ya que los eventos “seleccionar cuatro mujeres” y “seleccionar tres hombres” son disyuntos (intersecciones vacías):
+
+```{r}
+Probabilidad_h <- 0;  Probabilidad_h   #H) Prob. pedida
+
+```
+
+## [1] 0
+
+##### 6.3.9 Solución parte (i)
+
+Se aplicará el teorema de adición para dos eventos:
+P(A∪B)=P(A)+P(B)−P(A∩B)
+
+El código para escribir la expresión anterior es:
+
+$$P(A\cup B)= P(A) + P(B) - P(A\cap B)$$
+
+Por el inciso (h), la probabilidad de la intersección de los eventos “seleccionar cuatro mujeres” y “seleccionar tres hombres” es cero. Entonces: P(A∪B)=P(A)+P(B)
+. De los resultados encontrados en f y g, la probabilidad de seleccionar cuatro mujeres o tres hombres es:
+P(A)=0.0600+0.2401=0.3001
+
+El código para escribir la expresión anterior es:
+
+$$P(A) = 0.0600 + 0.2401 = 0.3001$$ 
+
+```{r}
+Probabilidad_i <- Probabilidad_f +Probabilidad_g; Probabilidad_i  #I) Prob. pedida
+
+```
+
+## [1] 0.3001715
+
+##### 6.3.10 Solución parte (j)
+
+Si no se seleccionan hombres, entonces, hemos seleccionado cuatro mujeres. Por lo tanto, por la parte (f), la probabilidad de que no seleccionemos hombres es 0.0600.
+
+```{r}
+Probabilidad_j <- Probabilidad_f; Probabilidad_j   #J) Probabilidad pedida
+
+```
+
+## [1] 0.06003431
+
+##### 6.3.11 Solución parte (k)
+
+Utilizaremos combinaciones y aplicaremos probabilidad clásica. Tenemos:
+
+```{r}
+Omega <- choose(55, 4); Omega     #J) Tamaño del espacio muestral
+
+```
+
+## [1] 341055
+
+```{r}
+Hombre <- choose(27,1); Hombre    #K) Combinaciones de los hombres
+
+```
+
+## [1] 27
+
+```{r}
+Mujer <- choose(28, 3); Mujer     #L) Combinaciones de las mujeres
+
+```
+
+## [1] 3276
+
+La probabilidad de seleccionar un hombre es
+P(A)=(27)(3276)341055=0.2593
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{(27)(3276)}{341055}=0.2593$$ 
+
+```{r}
+Probabilidad_k <- (Hombre * Mujer)/Omega; Probabilidad_k   #M) Probabilidad pedida
+
+```
+
+## [1] 0.2593482
+
+##### 6.3.12 Solución parte (l)
+
+Al seleccionar dos hombres, también estaremos seleccionando dos mujeres. Por lo tanto, por la parte (d), la probabilidad de que seleccionemos dos hombres es 0.3890.
+
+```{r}
+Probabilidad_l <- Probabilidad_d; Probabilidad_l   #M) Probabilidad pedida
+
+```
+
+## [1] 0.3890223
+
+##### 6.3.13 Solución parte (m)
+
+la probabilidad de seleccionar máximo dos hombres se halla sumando las probabilidades de seleccionar 0, 1 y 2 hombres. Entonces, por las partes (j), (k) y (l), tenemos que
+P(A)=0.0600+0.2593+0.3890=0.7084
+
+El código para escribir la expresión anterior es:
+
+$$P(A) = 0.0600 + 0.2593 + 0.3890  = 0.7084$$
+
+```{r}
+Probabilidad_m <- Probabilidad_j + Probabilidad_k + Probabilidad_l; Probabilidad_m   #N) Probabilidad pedida
+
+```
+
+## [1] 0.7084048
+
+##### 6.3.14 Solución parte (n)
+
+El evento “seleccionar al menos tres hombres” es el complemento del evento “seleccionar máximo dos hombres”. Por lo tanto, por la parte (m), la probabilidad pedida es:
+P(A¯¯¯¯)=1−P(A)=1−0.7084=0.2916
+
+El código para escribir la expresión anterior es:
+
+$$P(\overline {A})= 1- P(A) = 1 - 0.7084 = 0.2916$$
+
+```{r}
+Probabilidad_n <- 1 - Probabilidad_m;  Probabilidad_n   #O) Probabilidad pedida
+
+```
+
+## [1] 0.2915952
+
+##### 6.3.15 Solución parte (o)
+
+la probabilidad de seleccionar máximo dos mujeres es equivalente a la probabilidad de seleccionar al menos tres hombres. Por lo tanto, por la parte (n), la probabilidad pedida es: 0.2916
+
+```{r}
+Probabilidad_o <- Probabilidad_n; Probabilidad_o   #P) Probabilidad pedida
+
+```
+
+## [1] 0.2915952
+
+##### 6.3.16 Solución parte (p)
+
+Utilizaremos permutaciones sin repetición de n
+objetos tomados de k en k:
+
+```{r}
+Omega <- factorial(55)/factorial(55-4); Omega         #Q) Tamaño del espacio muestral
+
+```
+
+## [1] 8185320
+
+```{r}
+Mujer <- factorial(28)/factorial(28-3); Mujer         #R) Permutaciones de las mujeres
+
+```
+
+## [1] 19656
+
+```{r}
+Hombre <- factorial(27)/factorial(27-1); Hombre       #S) Permutaciones de los hombres
+
+```
+
+## [1] 27
+
+La probabilidad de que los tres primeros estudiantes seleccionados sean mujeres y el último un hombre es
+P(A)=(19656)(27)8185320=0.0648
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{(19656)(27)}{8185320}=0.0648$$ 
+
+```{r}
+Probabilidad_p <- (Mujer * Hombre)/Omega; Probabilidad_p   #T) Probabilidad pedida
+
+```
+
+## [1] 0.06483705
+
+##### 6.3.17 Solución parte (q)
+
+Basicamente, en este inciso, se pide la misma probabilidad formulada en (p). Por lo tanto, la probabilidad de que los dos primeros estudiantes seleccionados sean mujeres, el tercero un hombre y el último, una mujer es 0.0648.
+
+```{r}
+Probabilidad_q <- Probabilidad_p; Probabilidad_q     #A) Probabilidad pedida
+
+```
+
+## [1] 0.06483705
+
+##### 6.3.18 Solución parte (r)
+
+Utilizaremos permutaciones sin repetición de n
+objetos tomados de k en k:
+
+```{r}
+Omega <- factorial(55)/factorial(55-4); Omega         #B) Tamaño del espacio muestral
+
+```
+
+## [1] 8185320
+
+```{r}
+Mujer <- factorial(28)/factorial(28-4); Mujer         #C) Permutaciones de las mujeres
+
+```
+
+## [1] 491400
+
+La probabilidad de que los tres primeros estudiantes seleccionados sean mujeres y el último un hombre es
+P(A)=4914008185320=0.0600
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{491400}{8185320}=0.0600$$ 
+
+```{r}
+Probabilidad_r <- Mujer/Omega; Probabilidad_r         #D) Probabilidad pedida
+
+```
+
+## [1] 0.06003431
+
+##### 6.3.19 Solución parte (s)
+
+Como en la dos primeras selecciones aparecen las mujeres, entonces, para en las dos últimas dos posiciones pueden ocurrir alguno de los eventos siguientes:
+
+    “Seleccionar dos hombres”: que es la situación en (e).
+    “Seleccionar primero una mujer y luego un hombre”: que es la situación en (p).
+    “Seleccionar primero un hombre y luego una mujer”: que es la situación en (q).
+    “Seleccionar dos mujeres”: que es la situación en (r).
+
+Por esta razón, la probabilidad de que los dos primeros estudiantes seleccionados sean mujeres es la suma de aquéllas halladas en esos incisos. Es decir,
+P(A)=0.06484+0.06484+0.06484+0.0600=0.5787
+
+El código para escribir la expresión anterior es:
+
+$$P(A) =0.06484 + 0.06484 + 0.06484 + 0.0600 = 0.5787$$
+
+```{r}
+Probabilidad_s <- Probabilidad_d + Probabilidad_p + Probabilidad_q + Probabilidad_r  
+Probabilidad_s     #E) Probabilidad pedida
+
+```
+
+## [1] 0.5787307
+
+7 Ejercicios
+
+Crear un nuevo documento R Markdown, realizando los ejercicios que se indican abajo. Interprete los resultados hallados.
+
+NOTA: Al final de la sección 2.4 de la referencia 2 (ver abajo), se pueden revisar más ejercicios.
+
+    Considere solamente las observaciones que van desde la 132 hasta la 193. De esta base de datos, tenga solo en cuenta los estudiantes que son fumadores. Supongamos que se seleccionan cuatro estudiantes al azar.
+        Defina como “datos132a193” al data frame con estas observaciones y verifique su tamaño.
+        Defina como “Financiacion” al objeto que represente el tipo de financianción utilizado por los estudiantes para pagar sus estudios. Conviértalo en factor.
+        Construya una tabla de frecuencias para la variable Financiación.
+        ¿Cuál es la probabilidad de seleccionar dos mujeres y dos hombres?
+        Si seleccionan de uno en uno, ¿cuál es la probabilidad de que los dos primeros estudiantes seleccionadas estén becados y los dos últimos, no becados.
+        ¿Cuál es la probabilidad de seleccionar cuatro estudiantes becados?
+        ¿Cuál es la probabilidad de seleccionar tres estudiantes no becados?
+        ¿Cuál es la probabilidad de seleccionar cuatro estudiantes becados y tres no becados?
+        ¿Cuál es la probabilidad de seleccionar cuatro estudiantes becados o tres no becados?
+        ¿Cuál es la probabilidad de que no seleccionemos estudiantes no becados?
+        ¿Cuál es la probabilidad de que seleccionemos un estudiante no becado?
+        ¿Cuál es la probabilidad de que seleccionemos dos estudiantes no becados?
+        ¿Cuál es la probabilidad de seleccionar máximo dos estudiantes no becados?
+        ¿Cuál es la probabilidad de seleccionar al menos tres estudiantes no becados?
+        ¿Cuál es la probabilidad de seleccionar máximo dos estudiantes becados?
+        Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los tres primeros estudiantes seleccionados sean becados y el último, no becado?
+        Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los dos primeros estudiantes seleccionados estén becados, el tercero, uno no becado y el último, uno becado?
+        Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los cuatro estudiantes seleccionados estén becados?
+        Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los dos primeros estudiantes seleccionados estén becados?
+
+    Repita el ejercicio anterior, considerando solamente las observaciones que van desde la 133 hasta la 193 y, de esta base de datos, teniendo en cuenta solo en cuenta los estudiantes que son fumadores.
+
+    Repita el ejercicio anterior, considerando solamente las observaciones que van desde la 131 hasta la 194 y, de esta base de datos, teniendo en cuenta solo los estudiantes que sean fumadores.
+
+    Repita el ejercicio anterior, considerando solamente las observaciones que van desde la 130 hasta la 195 y, de esta base de datos, teniendo en cuenta solo los estudiantes que sean mujeres.
+
+### 8 Enlaces y materiales de ayuda
+
+    IPSUR (Introduction to Probability and Statistics Using R): https://www.nongnu.org/ipsur/
+
+    LLinás, H.; Rojas, C., Estadística descriptiva y distribuciones de probabilidad. Barranquilla: Ediciones Uninorte, 2005.
