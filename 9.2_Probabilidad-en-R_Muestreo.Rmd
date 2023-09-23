@@ -1,8 +1,8 @@
 ---
-file: 9.2_Probabilidad-en-R_Muestreo.Rmd
+file: "9.2_Probabilidad-en-R_Muestreo.Rmd"
 title: "Probabilidad en R: Muestreo"
 author: "prof. dr. J. Zavala"
-telegram: https://t.me/jzavalar
+telegram: "https://t.me/jzavalar"
 date: "2023-09-22"
 output: html_document
 ---
