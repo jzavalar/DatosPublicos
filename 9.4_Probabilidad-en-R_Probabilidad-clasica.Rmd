@@ -1,0 +1,810 @@
+---
+file: "9.4_Probabilidad-en-R_Probabilidad-clasica.Rmd"
+title: "Probabilidad en R: Probabilidad clásica"
+author: "prof. dr. J. Zavala"
+telegram: "https://t.me/jzavalar"
+date: "2023-09-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+[https://rpubs.com/hllinas/R_Prob_Clasica](https://rpubs.com/hllinas/R_Prob_Clasica)
+
+
+PROBABILIDAD EN R
+Probabilidad clásica
+Dr. rer. nat. Humberto LLinás Solano
+Departamento de Matemáticas y Estadística, Universidad del Norte (Barranquilla, Colombia)
+
+hllinas@uninorte.edu.co
+
+Biographical sketch
+
+27/08/21
+
+Abstract
+
+La teoría mencionada puede revisarse en el capítulo 2 de mis notas de clase que aparecen en el siguiente documento: 1.1. Estadística básica. En Rpubs:: toc se pueden ver otros documentos de posible interés.
+
+hllinas
+1 Paquetes
+
+En R podemos encontrar diversas funciones para ello:
+
+    “expand.grid” en el paquete “base”.
+    “combn” en el paquete “combinat”.
+    “permsn”, “tosscoin”, etc., en el paquete “prob”.
+
+Para nuestros cálculos, utilizaremos la siguiente librería:
+
+library(prob)   #A) Para calcular probabilidades
+
+En el paquete “prob”, encontramos la función “prob”, que nos va a permitir calcular probabilidades.
+2 Probabilidad clásica
+
+Sea Ω≠∅
+un espacio muestral finito y supongamos que todos los eventos elementales suceden con la misma probabilidad. Entonces, para cada evento A de Ω:
+P(A)=Número de elementos de ANúmero de elementos de Ω
+
+3 Propiedades
+
+Para eventos A
+, B, C de un espacio muestral Ω≠∅
+
+se tiene:
+
+    0≤P(A)≤1
+
+.
+
+P(∅)=0
+
+.
+
+P(Ω)=1
+
+.
+
+Propiedad del complemento: Si A¯¯¯¯
+es el complemento de A, entonces,
+P(A¯¯¯¯)=1−P(A)
+
+Teorema de la partición de un conjunto:
+P(A)=P(A∩B)+P(A∩B¯¯¯¯)
+P(B)=P(A∩B)+P(B∩A¯¯¯¯)
+
+Teorema de adición para 2 eventos mutuamente excluyentes (es decir, eventos con intersección vacía):
+P(A∪B)=P(A)+P(B)
+
+Teorema de adición para 2 eventos (no necesariamente mutuamente excluyentes):
+P(A∪B)=P(A)+P(B)−P(A∩B)
+
+Teorema de adición para 3 eventos mutuamente excluyentes (es decir, eventos con intersección vacía, dos a dos):
+P(A∪B∪C)=P(A)+P(B)+P(C)
+
+Teorema de adición para 3 eventos (no necesariamente mutuamente excluyentes):
+P(A∪B∪C)=P(A)+P(B)+P(C)−P(A∩B)−P(A∩C)−P(B∩C)+P(A∩B∩C)
+
+4 Ejemplos (dados)
+4.1 Ejemplo 1: Con orden
+
+Supongamos que un dado se lanza 3 veces. Hallaremos la probabilidad de que salga el 2 delante del 1. Nuestro espacio muestral está dado por:
+
+Omega <- rolldie(3); head(Omega)    #A) Espacio muestral
+
+##   X1 X2 X3
+## 1  1  1  1
+## 2  2  1  1
+## 3  3  1  1
+## 4  4  1  1
+## 5  5  1  1
+## 6  6  1  1
+
+Y el evento de interés:
+
+A <- subset(Omega, isin(Omega, c(2, 1), ordered = TRUE)); A   #B) Evento
+
+##     X1 X2 X3
+## 2    2  1  1
+## 7    1  2  1
+## 8    2  2  1
+## 9    3  2  1
+## 10   4  2  1
+## 11   5  2  1
+## 12   6  2  1
+## 14   2  3  1
+## 20   2  4  1
+## 26   2  5  1
+## 32   2  6  1
+## 38   2  1  2
+## 74   2  1  3
+## 110  2  1  4
+## 146  2  1  5
+## 182  2  1  6
+
+Con ayuda de los códigos siguientes, vemos que: el espacio muestral tiene w=#Ω=216
+elementos, la muestra es de tamaño n=3 y el evento A tiene a=#A=16
+
+elementos.
+
+w <- nrow(Omega)    #C) Tamaño del espacio muestral
+n <- dim(Omega)[2]  #D) Tamaño de la muestra 
+di<- dim(Omega)     #E) Tamaño del espacio muestral y de la muestra
+a <- nrow(A)        #F) Tamaño del evento
+
+Por consiguiente, la probablidad pedida es
+P(A)=16216=0.074
+
+a/w      #F) Probabilidad pedida
+
+## [1] 0.07407407
+
+Al lanzar 3 veces un dado, la probabilidad de que salga el 2 delante del 1 es aproxiamdamente 0.074.
+4.2 Ejemplo 2: Sin orden
+
+Supongamos que un dado se lanza 3 veces. Hallaremos la probabilidad de que salga el 1 y el 2. En este caso, el espacio muestral es:
+
+Omega <- rolldie(3); head(Omega)     #A) Espacio muestral
+
+##   X1 X2 X3
+## 1  1  1  1
+## 2  2  1  1
+## 3  3  1  1
+## 4  4  1  1
+## 5  5  1  1
+## 6  6  1  1
+
+Y el evento de interés:
+
+B <- subset(Omega, isin(Omega, c(2, 1), ordered = FALSE)); B   #B) Evento
+
+##     X1 X2 X3
+## 2    2  1  1
+## 7    1  2  1
+## 8    2  2  1
+## 9    3  2  1
+## 10   4  2  1
+## 11   5  2  1
+## 12   6  2  1
+## 14   2  3  1
+## 20   2  4  1
+## 26   2  5  1
+## 32   2  6  1
+## 37   1  1  2
+## 38   2  1  2
+## 39   3  1  2
+## 40   4  1  2
+## 41   5  1  2
+## 42   6  1  2
+## 43   1  2  2
+## 49   1  3  2
+## 55   1  4  2
+## 61   1  5  2
+## 67   1  6  2
+## 74   2  1  3
+## 79   1  2  3
+## 110  2  1  4
+## 115  1  2  4
+## 146  2  1  5
+## 151  1  2  5
+## 182  2  1  6
+## 187  1  2  6
+
+Con ayuda de los códigos siguientes, vemos que: el espacio muestral tiene w=#Ω=216
+elementos, la muestra es de tamaño n=3 y el evento B tiene b=#B=30
+
+elementos.
+
+w <- nrow(Omega)    #C) Tamaño del espacio muestral
+n <- dim(Omega)[2]  #D) Tamaño de la muestra 
+di<- dim(Omega)     #E) Tamaño del espacio muestral y de la muestra
+b <- nrow(B)        #F) Tamaño del evento
+
+Por lo tanto, la probabilidad pedida es
+P(B)=30216=0.139
+
+b/w
+
+## [1] 0.1388889
+
+Al lanzar 3 veces un dado, la probabilidad de que salga el 1 y el 2 es aproximadamente 0.139.
+5 Ejemplos (monedas)
+5.1 Ejemplo 3: Dos caras
+
+Una moneda no falsa se lanza 3 veces. Hallaremos la probabilidad de que salgan por lo menos 2 caras (H). El espacio muestral y su tamaño son:
+
+Omega<- tosscoin(4); Omega           #A) Espacio muestral 
+
+##    toss1 toss2 toss3 toss4
+## 1      H     H     H     H
+## 2      T     H     H     H
+## 3      H     T     H     H
+## 4      T     T     H     H
+## 5      H     H     T     H
+## 6      T     H     T     H
+## 7      H     T     T     H
+## 8      T     T     T     H
+## 9      H     H     H     T
+## 10     T     H     H     T
+## 11     H     T     H     T
+## 12     T     T     H     T
+## 13     H     H     T     T
+## 14     T     H     T     T
+## 15     H     T     T     T
+## 16     T     T     T     T
+
+El evento de que salgan por lo menos 2 caras (H) es:
+
+C <- subset(Omega, isin(Omega, c("H", "H"), ordered = FALSE)); C   #B) Evento 
+
+##    toss1 toss2 toss3 toss4
+## 1      H     H     H     H
+## 2      T     H     H     H
+## 3      H     T     H     H
+## 4      T     T     H     H
+## 5      H     H     T     H
+## 6      T     H     T     H
+## 7      H     T     T     H
+## 9      H     H     H     T
+## 10     T     H     H     T
+## 11     H     T     H     T
+## 13     H     H     T     T
+
+Con ayuda de los códigos siguientes, vemos que: el espacio muestral tiene w=#Ω=16
+elementos, la muestra es de tamaño n=4 y el evento C tiene c=#C=11
+
+elementos.
+
+w <- nrow(Omega)    #C) Tamaño del espacio muestral
+n <- dim(Omega)[2]  #D) Tamaño de la muestra 
+di<- dim(Omega)     #E) Tamaño del espacio muestral y de la muestra
+c <- nrow(C)        #F) Tamaño del evento
+
+Entonces, la probabilidad de que salgan por lo menos 2 caras (H) es:
+P(C)=1116=0.6875
+
+c/w
+
+## [1] 0.6875
+
+Al lanzar 4 veces una moneda no falsa, la probabilidad de que salgan por lo menos 2 caras (H) es aproximadamente 0.6875.
+5.2 Ejemplo 4: Tres caras
+
+Una moneda no falsa se lanza 4 veces. Hallaremos la probabilidad de que salgan por lo menos 3 caras (H). El espacio muestral es:
+
+Omega<- tosscoin(4); Omega           #A) Espacio muestral 
+
+##    toss1 toss2 toss3 toss4
+## 1      H     H     H     H
+## 2      T     H     H     H
+## 3      H     T     H     H
+## 4      T     T     H     H
+## 5      H     H     T     H
+## 6      T     H     T     H
+## 7      H     T     T     H
+## 8      T     T     T     H
+## 9      H     H     H     T
+## 10     T     H     H     T
+## 11     H     T     H     T
+## 12     T     T     H     T
+## 13     H     H     T     T
+## 14     T     H     T     T
+## 15     H     T     T     T
+## 16     T     T     T     T
+
+El evento de que salgan por lo menos 3 caras (H):
+
+D <- subset(Omega, isin(Omega, c("H", "H", "H"), ordered = TRUE)); D   #B) Evento
+
+##   toss1 toss2 toss3 toss4
+## 1     H     H     H     H
+## 2     T     H     H     H
+## 3     H     T     H     H
+## 5     H     H     T     H
+## 9     H     H     H     T
+
+Con ayuda de los códigos siguientes, vemos que: el espacio muestral tiene w=#Ω=16
+elementos, la muestra es de tamaño n=4 y el evento C tiene d=#D=5
+
+elementos.
+
+w <- nrow(Omega)    #C) Tamaño del espacio muestral
+n <- dim(Omega)[2]  #D) Tamaño de la muestra 
+di<- dim(Omega)     #E) Tamaño del espacio muestral y de la muestra
+d <- nrow(D)        #F) Tamaño del evento
+
+Entonces, la probabilidad de que salgan por lo menos 3 caras (H) es:
+P(D)=516=0.3125
+
+d/w
+
+## [1] 0.3125
+
+Al lanzar 4 veces una moneda no falsa, la probabilidad de que salgan por lo menos 2 caras (H) es aproximadamente 0.3125.
+6 Ejemplos (con base de datos)
+6.1 Ejemplo 5: El data frame
+
+Los siguientes datos representan los resultados obtenidos al realizar una encuesta a 400 estudiantes universitarios. En este documento, se importará la base de datos desde una dirección web (dos opciones):
+
+Opción A (web, desde github): Para esta opción, se necesita cargar la librería “repmis”:
+
+library(repmis)
+source_data("https://github.com/hllinas/DatosPublicos/blob/main/Estudiantes.Rdata?raw=false")
+datosCompleto <- Estudiantes
+
+Opción B (web, desde Google Drive):
+
+url.dat<- "http://bit.ly/Database-Estudiantes"
+datosCompleto <- read.delim(url.dat)
+
+Recuérdense las otras opciones, si tienen las bases de datos descargadas en su sesión de trabajo (ya sea en extensiones en Rdata, en excel o en otros formatos). Para más detalles, véase el documento R básico. A manera de ejemplo:
+
+Opción C (local, con archivo en Rdata):
+
+load(file="Estudiantes.Rdata")
+datosCompleto <- Estudiantes
+
+Opción D (local, con archivo en excel):
+
+datosCompleto <- read.delim('clipboard')
+
+El objetivo es utilizar esta información para calcular probabilidades clásicas. Es decir, probablidades de la forma:
+P(A)=Número de elementos de ANúmero de elementos de Ω
+
+6.2 Ejemplo 5: Enunciado
+
+Considere solamente las primeras 100 observaciones. Supongamos que se seleccionan cuatro estudiantes al azar.
+
+a) Defina como "datos" al data frame con las 100 primeras observaciones y verifique su tamaño.
+b) Defina como "Sexo" al objeto que represente el sexo de los estudiantes. Conviértalo en factor.
+c) Construya una tabla de frecuencias para la variable Sexo y el diagrama de barras correspondiente.  
+d) ¿Cuál es la probabilidad de seleccionar dos mujeres y dos hombres?
+e) Si seleccionan de uno en uno, ¿cuál es la probabilidad de que las dos primeras personas 
+   seleccionadas sean mujeres y las dos últimas, hombres. 
+f) ¿Cuál es la probabilidad de seleccionar cuatro mujeres?
+g) ¿Cuál es la probabilidad de seleccionar tres hombres?   
+h) ¿Cuál es la probabilidad de seleccionar cuatro mujeres y tres hombres?
+i) ¿Cuál es la probabilidad de seleccionar cuatro mujeres o tres hombres?
+j) ¿Cuál es la probabilidad de que no seleccionemos hombres?
+k) ¿Cuál es la probabilidad de que seleccionemos un hombre?  
+l) ¿Cuál es la probabilidad de que seleccionemos dos hombres? 
+m) ¿Cuál es la probabilidad de seleccionar máximo dos hombres? 
+n) ¿Cuál es la probabilidad de seleccionar al menos tres hombres?
+o) ¿Cuál es la probabilidad de seleccionar máximo dos mujeres? 
+p) Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los tres
+   primeros estudiantes seleccionados sean mujeres y el último, un hombre?
+q) Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los dos
+   primeros estudiantes seleccionados sean mujeres, el tercero un hombre y el último, una mujer? 
+r) Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los cuatro estudiantes 
+   seleccionados sean mujeres?
+s) Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los dos primeros estudiantes    seleccionados sean mujeres?
+
+6.3 Solución del ejemplo 5
+6.3.1 Solución parte (a)
+
+Filtramos y definimos como “datos” al data frame con las 100 primeras observaciones:
+
+datos <- datosCompleto[1:100,]    #A) La nueva base de datos
+
+El número de observaciones es 100 y se obtiene así:
+
+nrow(datos)                       #B) Número de observaciones
+
+## [1] 100
+
+6.3.2 Solución parte (b)
+
+Definimos la variable categórica y revisamos sus niveles:
+
+Sexo <- as.factor(datos$Sexo)    #C) La variable
+levels(Sexo)                     #D) Sus niveles
+
+## [1] "Femenino"  "Masculino"
+
+6.3.3 Solución parte (c)
+
+La tabla de frecuencia es:
+
+Cuentas <- table(Sexo); Cuentas         #F) Tabla de frecuencia
+
+## Sexo
+##  Femenino Masculino 
+##        49        51
+
+Observamos que, en la muestra de 100, hay 49 mujeres y 51 hombres.
+
+El diagrama de barras:
+
+barplot(Cuentas, main="Diagrama de barras", xlab="Sexo", ylab="Frecuencias", legend = rownames(Cuentas), col=c("pink","blue"),  ylim = c(0, 80)) 
+
+6.3.4 Solución parte (d)
+
+Nos piden hallar la probabilidad de seleccionar dos mujeres y dos hombres. Utilizaremos combinaciones (no importa el orden) y aplicaremos probabilidad clásica. Tenemos:
+
+w <- choose(100, 4); w            #G) Tamaño del espacio muestral
+
+## [1] 3921225
+
+Mujer <- choose(49, 2); Mujer     #H) Combinaciones de las mujeres
+
+## [1] 1176
+
+Hombre <- choose(51,2); Hombre    #I) Combinaciones de los hombres
+
+## [1] 1275
+
+La probabilidad de seleccionar dos mujeres y dos hombres es
+P(A)=(1176)(1275)3921225=0.3824
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{(1176)(1275)}{3921225}= 0.3824$$ 
+
+Probabilidad_d <- (Mujer * Hombre)/w; Probabilidad_d   #J) Probabilidad pedida
+
+## [1] 0.3823805
+
+6.3.5 Solución parte (e)
+
+Ahora se seleccionan de uno en uno. Nos piden hallar la probabilidad de que las dos primeras personas seleccionadas sean mujeres y las dos últimas, hombres. Como interesa el orden, utilizaremos permutaciones sin repetición de n
+objetos tomados de k en k
+
+(puede verse el punto 2 de la sección 3.0.1 en Rpubs):
+
+w <- factorial(100)/factorial(100-4); w       #K) Tamaño del espacio muestral
+
+## [1] 94109400
+
+Mujer <- factorial(49)/factorial(49-2); Mujer         #L) Permutaciones de las mujeres
+
+## [1] 2352
+
+Hombre <- factorial(51)/factorial(51-2); Hombre       #M) Permutaciones de los hombres
+
+## [1] 2550
+
+La probabilidad de que las dos primeras personas seleccionadas sean mujeres y las dos últimas, hombres, es
+P(A)=(2352)(2550)94109400=0.0637
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{(2352)(2550)}{94109400}=0.0637$$ 
+
+Probabilidad_e <- (Mujer * Hombre)/w; Probabilidad_e   #N) Probabilidad pedida
+
+## [1] 0.06373008
+
+6.3.6 Solución parte (f)
+
+Nos piden hallar la probabilidad de seleccionar cuatro mujeres. Utilizaremos combinaciones y aplicaremos probabilidad clásica. Tenemos:
+
+w <- choose(100, 4); w    #O) Tamaño del espacio muestral
+
+## [1] 3921225
+
+Mujer <- choose(49, 4); Mujer     #P) Combinaciones de las mujeres
+
+## [1] 211876
+
+La probabilidad de seleccionar cuatro mujeres es
+P(A)=2118763921225=0.054
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{211876}{3921225}=0.054$$ 
+
+Probabilidad_f <- Mujer/w; Probabilidad_f   #Q) Probabilidad pedida
+
+## [1] 0.05403311
+
+6.3.7 Solución parte (g)
+
+Nos piden hallar la probabilidad de seleccionar tres hombres. Utilizaremos combinaciones y aplicaremos probabilidad clásica. Tenemos:
+
+w <- choose(100, 4); w    #R) Tamaño del espacio muestral
+
+## [1] 3921225
+
+Hombre <- choose(51,3); Hombre    #S) Combinaciones de los hombres
+
+## [1] 20825
+
+Mujer <- choose(49, 1); Mujer     #T) Combinaciones de las mujeres
+
+## [1] 49
+
+La probabilidad de seleccionar tres hombres es
+P(A)=(20825)(49)3921225=0.2602
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{(20825)(49)}{3921225}=0.2602$$
+
+Probabilidad_g <- (Hombre * Mujer)/w; Probabilidad_g   #U) Probabilidad pedida
+
+## [1] 0.2602312
+
+6.3.8 Solución parte (h)
+
+La probabilidad de seleccionar cuatro mujeres y tres hombres es 0, ya que los eventos “seleccionar cuatro mujeres” y “seleccionar tres hombres” son disyuntos (intersecciones vacías):
+
+Probabilidad_h <- 0;  Probabilidad_h   #V) Prob. pedida
+
+## [1] 0
+
+6.3.9 Solución parte (i)
+
+Nos piden hallar la probabilidad de seleccionar cuatro mujeres o tres hombres. Por el inciso (h), la probabilidad de la intersección de los eventos “seleccionar cuatro mujeres” y “seleccionar tres hombres” es cero. Por esta razón, se aplicará el teorema de adición para dos eventos (inciso (f) de la sección 3):
+P(A∪B)=P(A)+P(B)
+
+De los resultados encontrados en los incisos (f) y (g), la probabilidad de seleccionar cuatro mujeres o tres hombres es:
+P(A)=0.0540+0.2602=0.3142
+
+El código para escribir la expresión anterior es:
+
+$$P(A) = 0.0540 + 0.2602 = 0.3142$$ 
+
+Probabilidad_i <- Probabilidad_f +Probabilidad_g; Probabilidad_i  #U) Prob. pedida
+
+## [1] 0.3142643
+
+6.3.10 Solución parte (j)
+
+Nos piden hallar la probabilidad de que no seleccionemos hombres. Entonces, si no se seleccionan hombres, entonces, hemos seleccionado cuatro mujeres. Por lo tanto, por la parte (f), la probabilidad de que no seleccionemos hombres es 0.0540.
+
+Probabilidad_j <- Probabilidad_f; Probabilidad_j   #A) Probabilidad pedida
+
+## [1] 0.05403311
+
+6.3.11 Solución parte (k)
+
+Nos piden hallar la probabilidad de que seleccionemos un hombre. Utilizaremos combinaciones y aplicaremos probabilidad clásica. Tenemos:
+
+w <- choose(100, 4); w    #B) Tamaño del espacio muestral
+
+## [1] 3921225
+
+Hombre <- choose(51,1); Hombre    #C) Combinaciones de los hombres
+
+## [1] 51
+
+Mujer <- choose(49, 3); Mujer     #D) Combinaciones de las mujeres
+
+## [1] 18424
+
+La probabilidad de seleccionar un hombre es
+P(A)=(51)(18424)3921225=0.2396
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{(51)(18424)}{3921225}=0.2396$$ 
+
+Probabilidad_k <- (Hombre * Mujer)/w; Probabilidad_k   #E) Probabilidad pedida
+
+## [1] 0.2396251
+
+6.3.12 Solución parte (l)
+
+Nos piden hallar la probabilidad de que seleccionemos dos hombres. Entonces, al seleccionar dos hombres, también estaremos seleccionando dos mujeres. Por lo tanto, por la parte (d), la probabilidad de que seleccionemos dos hombres es 0.3824.
+
+Probabilidad_l <- Probabilidad_d; Probabilidad_l   #F) Probabilidad pedida
+
+## [1] 0.3823805
+
+6.3.13 Solución parte (m)
+
+Nos piden hallar la probabilidad de seleccionar máximo dos hombres. Para ello, solo debemos sumar las probabilidades de seleccionar 0, 1 y 2 hombres. Entonces, por las partes (j), (k) y (l), tenemos que
+P(A)=0.0540+0.2396+0.3824=0.6760
+
+El código para escribir la expresión anterior es:
+
+$$P(A) = 0.0540 + 0.2396 + 0.3824  = 0.6760$$
+
+Probabilidad_m <- Probabilidad_j + Probabilidad_k + Probabilidad_l; Probabilidad_m   #G) Probabilidad pedida
+
+## [1] 0.6760387
+
+6.3.14 Solución parte (n)
+
+Nos piden hallar la probabilidad de seleccionar al menos tres hombres. Observe que el evento “seleccionar al menos tres hombres” es el complemento del evento “seleccionar máximo dos hombres”. Por lo tanto, por la parte (m), la probabilidad pedida es:
+P(A¯¯¯¯)=1−P(A)=1−0.6760=0.3239
+
+El código para escribir la expresión anterior es:
+
+$$P(\overline {A})= 1- P(A) = 1 - 0.6760 = 0.3239$$
+
+Probabilidad_n <- 1 - Probabilidad_m;  Probabilidad_n   #H) Probabilidad pedida
+
+## [1] 0.3239613
+
+6.3.15 Solución parte (o)
+
+Nos piden hallar la probabilidad de seleccionar máximo dos mujeres. El evento “seleccionar máximo dos mujeres” es el complemento del evento “seleccionar al menos tres mujeres”. Y la probabilidad de este evento (“seleccionar al menos tres mujeres”) es igual a la suma de las probabilidades halladas en las partes (f) y (k). Por lo tanto, utilizando la propiedad del complemento (inciso (d) de la sección 3), la probabilidad pedida es: 0.7064.
+
+Probabilidad_o <- 1- (Probabilidad_f + Probabilidad_k); Probabilidad_o   #I) Probabilidad pedida
+
+## [1] 0.7063418
+
+6.3.16 Solución parte (p)
+
+Ahora, se seleccionan de uno en uno y nos piden hallar la probabilidad de que los tres primeros estudiantes seleccionados sean mujeres y el último, un hombre. En este caso, utilizaremos permutaciones sin repetición de n
+objetos tomados de k en k
+
+(puede verse el punto 2 de la sección 3.0.1 en Rpubs):
+
+w <- factorial(100)/factorial(100-4); w       #K) Tamaño del espacio muestral
+
+## [1] 94109400
+
+Mujer <- factorial(49)/factorial(49-3); Mujer         #L) Permutaciones de las mujeres
+
+## [1] 110544
+
+Hombre <- factorial(51)/factorial(51-1); Hombre       #M) Permutaciones de los hombres
+
+## [1] 51
+
+La probabilidad de que los tres primeros estudiantes seleccionados sean mujeres y el último, un hombre, es
+P(A)=(110544)(51)94109400=0.0599
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{(110544)(51)}{94109400}=0.0599$$
+
+Probabilidad_p <- (Mujer * Hombre)/w; Probabilidad_p   #N) Probabilidad pedida
+
+## [1] 0.05990628
+
+6.3.17 Solución parte (q)
+
+Nuevamente, se seleccionan de uno en uno y nos piden hallar la probabilidad de que los dos primeros estudiantes seleccionados sean mujeres, el tercero un hombre y el último, una mujer. Basicamente, en este inciso, se pide la misma probabilidad formulada en (p). Por lo tanto, la probabilidad de que los dos primeros estudiantes seleccionados sean mujeres, el tercero un hombre y el último, una mujer es 0.0599.
+
+Probabilidad_q <- Probabilidad_p; Probabilidad_q     #O) Probabilidad pedida
+
+## [1] 0.05990628
+
+6.3.18 Solución parte (r)
+
+Otra vez, se seleccionan de uno en uno y nos piden hallar la probabilidad de que los cuatro estudiantes seleccionados sean mujeres. Utilizaremos permutaciones sin repetición de n
+objetos tomados de k en k
+
+(puede verse el punto 2 de la sección 3.0.1 en Rpubs):
+
+w <- factorial(100)/factorial(100-4); w       #P) Tamaño del espacio muestral
+
+## [1] 94109400
+
+Mujer <- factorial(49)/factorial(49-4); Mujer         #Q) Permutaciones de las mujeres
+
+## [1] 5085024
+
+La probabilidad de que los tres primeros estudiantes seleccionados sean mujeres y el último un hombre es
+P(A)=508502494109400=0.0540
+
+El código para escribir la expresión anterior es:
+
+$$P(A)= \frac{5085024}{94109400}=0.0540$$ 
+
+Probabilidad_r <- Mujer/w; Probabilidad_r         #R) Probabilidad pedida
+
+## [1] 0.05403311
+
+6.3.19 Solución parte (s)
+
+Nuevamente, se seleccionan de uno en uno y nos piden hallar la probabilidad de que los dos primeros estudiantes seleccionados sean mujeres. Como en la dos primeras selecciones aparecen las mujeres, entonces, para en las dos últimas dos posiciones pueden ocurrir alguno de los eventos siguientes:
+
+    “Seleccionar dos hombres”: que es la situación en (e).
+    “Seleccionar primero una mujer y luego un hombre”: que es la situación en (p).
+    “Seleccionar primero un hombre y luego una mujer”: que es la situación en (q).
+    “Seleccionar dos mujeres”: que es la situación en (r).
+
+Por esta razón, la probabilidad de que los dos primeros estudiantes seleccionados sean mujeres es la suma de aquéllas halladas en esos incisos. Es decir,
+P(A)=0.0637+0.0599+0.0599+0.0540=0.2376
+
+El código para escribir la expresión anterior es:
+
+$$P(A) \; =\;  0.0637 + 0.0599 + 0.0599 + 0.0540 \; =\; 0.2376$$ 
+
+Probabilidad_s <- Probabilidad_e + Probabilidad_p + Probabilidad_q + Probabilidad_r   #S) Cálculo 
+Probabilidad_s   #T) El valor de la probabilidad
+
+## [1] 0.2375758
+
+7 Ejercicios
+
+Crear un nuevo documento R Markdown, realizando los ejercicios que se indican abajo. Interprete los resultados hallados.
+
+NOTA: Al final de la sección 2.3 de la referencia 2 (ver abajo), se pueden revisar más ejercicios.
+
+    Dos dados no falsos se lanzan. Halle la probabilidad de que:
+
+        La suma de los números sea un 7.
+
+        La suma sea por lo menos un 11.
+
+        La suma sea a lo más un 2.
+
+        Se obtenga un doble.
+
+        No se obtenga un doble.
+
+    Cinco monedas no falsas se lanzan.
+
+        Halle el espacio muestral y su tamaño. Calcule la probabilidades de los eventos que se indican a continuación.
+
+        B: sale 1 cara.
+
+        C: salen 2 caras.
+
+        D: salen 2 sellos.
+
+        E: salen 4 caras.
+
+        F: salen 0 sellos.
+
+    Un estante tiene 6 libros de matemáticas y 4 de física. Halle la probabilidad de que 3 libros determinados de matemáticas estén juntos, si todos los libros de matemáticas son diferentes y los libros de física también.
+
+    Un director de personal tiene ocho candidatos para cubrir 4 puestos. De éstos, 5 son hombres y 3 mujeres. Si, de hecho, toda combinación de candidatos tiene las mismas probabilidades de ser elegido, ¿cuál es la probabilidad de que ninguna mujer sea contratada?
+
+    Una caja de doce lapiceros tiene dos defectuosos. Se extraen 10 lapiceros sin reemplazo. ¿Cuál es la probabilidad de que 4 salgan defectuosos?
+
+    Una caja contiene 8 fichas rojas, 3 blancas y 9 azules. Si se extraen 3 fichas sin reemplazo y sin orden, determinar la probabilidad de que:
+
+        Las 3 fichas sean blancas.
+
+        2 sean rojas y 1 blanca.
+
+        Al menos 1 sea blanca.
+
+        Se extraiga una de cada color.
+
+    Considere solamente las observaciones que van desde la 132 hasta la 193. Supongamos que se seleccionan cuatro estudiantes al azar.
+        Defina como “datos132a193” al data frame con estas observaciones y verifique su tamaño.
+        Defina como “Financiacion” al objeto que represente el tipo de financianción utilizado por los estudiantes para pagar sus estudios. Conviértalo en factor.
+        Construya una tabla de frecuencias para la variable Financiación.
+        ¿Cuál es la probabilidad de seleccionar dos becados y dos, no becados?
+        Si seleccionan de uno en uno, ¿cuál es la probabilidad de que los dos primeros estudiantes seleccionadas estén becados y los dos últimos, no becados.
+        ¿Cuál es la probabilidad de seleccionar cuatro estudiantes becados?
+        ¿Cuál es la probabilidad de seleccionar tres estudiantes no becados?
+        ¿Cuál es la probabilidad de seleccionar cuatro estudiantes becados y tres no becados?
+        ¿Cuál es la probabilidad de seleccionar cuatro estudiantes becados o tres no becados?
+        ¿Cuál es la probabilidad de que no seleccionemos estudiantes no becados?
+        ¿Cuál es la probabilidad de que seleccionemos un estudiante no becado?
+        ¿Cuál es la probabilidad de que seleccionemos dos estudiantes no becados?
+        ¿Cuál es la probabilidad de seleccionar máximo dos estudiantes no becados?
+        ¿Cuál es la probabilidad de seleccionar al menos tres estudiantes no becados?
+        ¿Cuál es la probabilidad de seleccionar máximo dos estudiantes becados?
+        Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los tres primeros estudiantes seleccionados sean becados y el último, no becado?
+        Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los dos primeros estudiantes seleccionados estén becados, el tercero, uno no becado y el último, uno becado?
+        Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los cuatro estudiantes seleccionados estén becados?
+        Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los dos primeros estudiantes seleccionados estén becados?
+
+    Considere solamente las primeras 40 observaciones. Supongamos que se seleccionan cinco estudiantes al azar.
+        Defina como “datos” al data frame con las 40 primeras observaciones y verifique su tamaño.
+        Defina como “Sexo” y “Fuma” a los objetos que representan el sexo de los estudiantes y los fumadores o no, respectivamente. Conviértalos en factores.
+        Construya una tabla de contingencia con estas dos variables y el diagrama de barras correspondiente.
+        ¿Cuál es la probabilidad de seleccionar cinco mujeres?
+        ¿Cuál es la probabilidad de seleccionar tres hombres?
+        ¿Cuál es la probabilidad de seleccionar cuatro mujeres y un hombre?
+        ¿Cuál es la probabilidad de seleccionar cuatro mujeres o un hombre?
+        ¿Cuál es la probabilidad de que seleccionemos tres mujeres?
+        ¿Cuál es la probabilidad de seleccionar máximo tres hombres?
+        ¿Cuál es la probabilidad de seleccionar al menos cuatro hombres?
+        ¿Cuál es la probabilidad de seleccionar máximo una mujer?
+        Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los tres primeros estudiantes seleccionados sean mujeres y los dos últimos, hombres?
+        Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los dos primeros estudiantes seleccionados sean mujeres, el tercero un hombre y los dos últimos, mujeres?
+        Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los cinco estudiantes seleccionados sean mujeres?
+        Si se seleccionan de uno en uno, ¿cuál es la probabilidad de que los dos primeros estudiantes seleccionados sean mujeres?
+        ¿Cuál es la probabilidad de seleccionar dos mujeres y tres hombres?
+        Si seleccionan de uno en uno, ¿cuál es la probabilidad de que las tres primeras personas seleccionadas sean mujeres y las dos últimas, hombres.
+        ¿Cuál es la probabilidad de que no seleccionemos hombres?
+        ¿Cuál es la probabilidad de que seleccionemos una mujer?
+
+Bibliografía
+
+    LLinás, H., Rojas, C. (2005); Estadística descriptiva y distribuciones de probabilidad. Barranquilla: Editorial Universidad del Norte.
+
+    Consultar el documento RPubs :: Enlace y materiales de ayuda.
