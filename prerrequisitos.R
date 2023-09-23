@@ -15,7 +15,6 @@ if (!require("prob")) {
   if (!require("remotes")) {
     install.packages("remotes")
   }
-  library(remotes)
   # instalar dependencias y paquete prob
   # a partir de la fuente: 
   # https://community.rstudio.com/t/installation-prob-package/157668/2
@@ -25,10 +24,10 @@ if (!require("prob")) {
 }
 # alternativamente, ejecutar el siguiente código:
 install.packages("remotes")
-library(remotes)
 remotes::install_github("cran/fOptions", force = TRUE)
 remotes::install_github("cran/fAsianOptions", force = TRUE)
 remotes::install_github("cran/prob", force = TRUE)
+
 
 # instalar el paquete repmis
 if (!require("repmis")) {
@@ -43,6 +42,7 @@ if (!require("repmis")) {
 install.packages("devtools",force=TRUE)
 devtools::install_github('christophergandrud/repmis')
 
+
 # instalar el paquete rio
 if (!require("rio")) {
   # instalar paquete
@@ -52,6 +52,25 @@ if (!require("rio")) {
 # Alternativamente usar el siguiente código:
 install.packages("rio")
 rio::install_formats()
+
+# instalar el paquete renv, solo por primera vez
+library(renv)
+if (!require("renv")) {
+  install.packages("renv")
+}
+# alternativamente, ejecutar el siguiente código:
+install.packages("renv")
+library(renv)
+renv::activate()
+renv::install(packages="remotes")
+renv::install("cran/fOptions")
+renv::install("cran/fAsianOptions")
+renv::install("cran/prob")
+renv::install(packages="devtools")
+renv::install(packages="christophergandrud/repmis")
+renv::install(packages="rio")
+rio::install_formats()
+
 
 
 # Preparación de los datos
@@ -83,3 +102,5 @@ if (file.exists('./Estudiantes.Rdata')) {
     print('Archivo no encontrado :')
   }
 }
+
+
