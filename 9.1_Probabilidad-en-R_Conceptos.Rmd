@@ -10,44 +10,59 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 [https://rpubs.com/hllinas/R_Exp-Omega-Evento](https://rpubs.com/hllinas/R_Exp-Omega-Evento)
 
 -----------
 N.B. Este tutorial corresponde a una versión actualizada del tutorial de referencia del dr. Humberto LLinás, convertido a RMarkdown. Sólo se han actualizado algunos aspectos de Rmarkdown y LaTex, para la reproducción del mismo, sin errores, en 2023, desde RStudio.
 -----------
 
-PROBABILIDAD EN R
-Experimento, espacio muestral y evento
-Dr. rer. nat. Humberto LLinás Solano
+# PROBABILIDAD EN R
+## Experimento, espacio muestral y evento
+**Dr. rer. nat. Humberto LLinás Solano**
 Departamento de Matemáticas y Estadística, Universidad del Norte (Barranquilla, Colombia)
 
-hllinas@uninorte.edu.co
+[
 
-Biographical sketch
+hllinas@uninorte.edu.co](hllinas@uninorte.edu.co)
+
+[Biographical sketch](https://rpubs.com/hllinas/Bio_Sketch)
 
 26/08/21
 
-Abstract
+### Abstract
 
-La teoría mencionada puede revisarse en el capítulo 2 de mis notas de clase que aparecen en el siguiente documento: 1.1. Estadística básica. En Rpubs:: toc se pueden ver otros documentos de posible interés.
+La teoría mencionada puede revisarse en el capítulo 2 de mis notas de clase que aparecen en el siguiente documento: [1.1. Estadística básica](https://rpubs.com/hllinas/R_NotasClase). En [Rpubs:: toc](https://rpubs.com/hllinas/toc) se pueden ver otros documentos de posible interés.
 
-hllinas
-1 Paquetes
+### 0 Preparación del entorno
+
+Los paquetes `prob` y `repmis` no están disponibles desde CRAN, por lo que requieren un procedimiento alterno de instalación. Por ello, se ha creado el breve script en R titulado [R_Prob_Condicional_prerrequisito.R](https://github.com/jzavalar/DatosPublicos/blob/main/R_Prob_Condicional_prerrequisito.Rmd) que pemite instalarlos y preparar el ambiente para que funcione el tutorial. Ambos paquetes de instalan desde GitHub con el paquete `remotes` y `devtools`. Adicionalmente, se instalan el paquete `rio`, que sirve para preparar los datos de su fuente original, aunque en este repositorio, incluye una copia del repositorio `Datos Publicos` del dr. Humberto LLinás.  (J. Zavala, JZ)
+
+
+### 1 Paquetes
 
 En R podemos encontrar diversas funciones para ello:
 
-    “expand.grid” en el paquete “base”.
-    “combn” en el paquete “combinat”.
-    “permsn”, “tosscoin”, etc., en el paquete “prob”.
+    `expand.grid` en el paquete `base`.
+    `combn` en el paquete `combinat`.
+    `permsn`, `tosscoin`, etc., en el paquete `prob`.
 
 Para nuestros cálculos, utilizaremos la siguiente librería:
 
-library(prob)   #A) Para analizar experimentos estadísticos
+```{r}
+#A) Para analizar experimentos estadísticos
+library(prob)
+```
 
-2 Experimento
+
+### 2 Experimento
 
 Todo experimento se puede clasificar como se ilustra en la figura de abajo:
-3 Espacio muestral
+
+<img src="/imagenes/figura_9.1.1.png" alt="experimento" width="60 %"/>
+
+
+### 3 Espacio muestral
 
 Teóricamente se simbolizará con Ω
 
