@@ -1,6 +1,10 @@
 # Datos Públicos
 
-Este repositorio corresponde a una versión actualizada del repositorio [DatosPublicos](https://github.com/hllinas/DatosPublicos) del dr. Humberto LLinás, disponible en GitHub. 
+Este repositorio corresponde a una versión actualizada del repositorio [DatosPublicos](https://github.com/hllinas/DatosPublicos) del dr. Humberto LLinás, disponible en GitHub. Los archivos del repositorio original son:
+
+- README.md (este archivo)
+- Estudiantes.RData (datos)
+- Estudiantes(Descroipcion).pdf (Diccionario de datos de Estudiantes.RData)
 
 Esencialmente, se ha preparado el script [`Prerrequisitos.R`](https://github.com/jzavalar/DatosPublicos/blob/main/prerrequisitos.R) para que el tutorial [Probabilidad Condicional](https://github.com/jzavalar/DatosPublicos/blob/main/R_Prob_Condicional.Rmd) se compile correctamente y se reproduzca, sin errores, en [RStudio.cloud](https://posit.cloud/content/6287627). El script prepara el ambiente con los paquetes que requiere, usa como base el archivo de datos [Estudiantes.Rdata](https://github.com/hllinas/DatosPublicos/blob/main/Estudiantes.Rdata) del autor y crea los otros archivos de datos que requiere para su funcionamiento, mediante el paquete `rio`. 
 
