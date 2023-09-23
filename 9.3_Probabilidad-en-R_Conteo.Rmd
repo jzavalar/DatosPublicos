@@ -13,6 +13,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 [https://rpubs.com/hllinas/R_Conteo](https://rpubs.com/hllinas/R_Conteo)
 
+-----------
+N.B. Este tutorial corresponde a una versión actualizada del tutorial de referencia del dr. Humberto LLinás, convertido a RMarkdown. Sólo se han actualizado algunos aspectos de Rmarkdown y LaTex, para la reproducción del mismo, sin errores, en 2023, desde RStudio.
+-----------
+
 PROBABILIDAD EN R
 Técnicas de conteo
 Dr. rer. nat. Humberto LLinás Solano
