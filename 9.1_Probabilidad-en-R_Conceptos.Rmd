@@ -1,3 +1,15 @@
+---
+file: R_Prob_Condicional.Rmd
+title: "Probabilidad Condicional"
+author: "prof. dr. J. Zavala"
+telegram: https://t.me/jzavalar
+date: "2023-09-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 https://rpubs.com/hllinas/R_Exp-Omega-Evento
 
 PROBABILIDAD EN R
