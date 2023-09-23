@@ -1,8 +1,8 @@
 ---
-file: 9.1_Probabilidad-en-R_Conceptos.Rmd
+file: "9.1_Probabilidad-en-R_Conceptos.Rmd"
 title: "Probabilidad en R: Conceptos"
 author: "prof. dr. J. Zavala"
-telegram: https://t.me/jzavalar
+telegram: "https://t.me/jzavalar"
 date: "2023-09-22"
 output: html_document
 ---
