@@ -86,7 +86,7 @@ renv::install(packages="knitr")
 
 # Preparación de los datos
 # Preparar los datos de manera local
-if (file.exists('./Estudiantes.Rdata')) {
+if (file.exists('./datos/Estudiantes.Rdata')) {
 } else {  
   # cargar paquete rio
   library(rio)
@@ -94,40 +94,59 @@ if (file.exists('./Estudiantes.Rdata')) {
   # archivo de datos, en Internet
   url_Estudiantes <- "https://github.com/hllinas/DatosPublicos/blob/main/Estudiantes.Rdata?raw=false"
   url_hsbdemo <- "https://github.com/hllinas/DatosPublicos/blob/main/hsbdemo.Rdata?raw=false"
+
   # archivo de datos original
-  url_hsbdemo_ucla <- "https://stats.oarc.ucla.edu/stat/data/hsbdemo.dta"
+  url_hsbdemo_dta <- "https://stats.oarc.ucla.edu/stat/data/hsbdemo.dta"
   # Fuente: https://search.r-project.org/CRAN/refmans/UPG/html/program.html
-    
+  url_hsbraw_csv <- "https://stats.idre.ucla.edu/stat/data/hsbraw.csv"
+  
   # copiar archivo de Internet al directorio local
   # nombres de los archivos
-  archivo_rdata <- './datos/Estudiantes.Rdata'
-  archivo_csv <- './datos/Estudiantes.csv'
+  # Estudiantes
+  archivo_est_rdata <- './datos/Estudiantes.Rdata'
+  archivo_est_csv <- './datos/Estudiantes.csv'
   archivo_clip <- './datos/clipboard'
-  archivo_dta <- './datos/hsbdemo.dta'
+  
+  # hsbdemo
+  archivo_hsb_rdata <- './datos/hsbdemo.Rdata'
+  archivo_hsb_dta <- './datos/hsbdemo.dta'
+  archivo_hsbraw_csv <- './datos/hsbraw.csv'
   
   # Probar cargar datos
   Estudiantes <- import(url_Estudiantes)
   hsbdemo <- import(url_hsbdemo)
-  hsbdemo_ucla <- import(url_hsbdemo_ucla)
 
-  # convertir archivo Estudiantes.Rdata a csv
-  convert(url_data,archivo_rdata)
-  # convertir a csv
-  convert(url_data,archivo_csv)
-  # convertir a dta
-  convert(url_hsbdemo_ucla,archivo_dta)
+  # archivo originales
+  hsbdemo_dta <- import(url_hsbdemo_dta)
+  hsbraw_csv <- import(url_hsbraw_csv)
+
+  # Copiar archivos
+  # copiar Estudiantes.Rdata de Internet al directorio local
+  convert(url_Estudiantes,archivo_est_rdata)
+  # convertir Estudiantes.Rdata de Internet a .csv al directorio local
+  convert(url_Estudiantes,archivo_est_csv)
+  
+  # copiar hsbdemo.Rdata de Internet al directorio local
+  convert(url_hsbdemo,archivo_hsb_rdata)
+  
+  # copiar hsbdemo.dta de Internet al directorio local
+  convert(url_hsbdemo_dta,archivo_hsb_dta)
+  # copiar archivo hsbraw.csv de Internet al directorio local
+  convert(url_hsbraw_csv,archivo_hsbraw_csv)
   
   # Crear el archivo .csv "clipboard"
   # Checar si existe el archivo
-  if(file.exists(archivo_csv)){
-    file.copy(archivo_csv,archivo_clip)
+  if(file.exists(archivo_est_csv)){
+    file.copy(archivo_est_csv,archivo_clip)
   } else {
     print('Archivo no encontrado :')
   }
-  # Borrar dataframes de la memoria
-  rm(Estudiantes)
-  rm(hsbdemo)
-  rm(hsbdemo_ucla)
+  # Borrar el ambiente de la memoria
+  rm(list = ls())
+  # lista los archivos de datos
+  list.files(path="./datos/", pattern=NULL, all.files=FALSE,
+             full.names=FALSE)
+  
 }
 
 
