@@ -4,7 +4,7 @@
 
 Este repositorio corresponde a una versión actualizada del repositorio [DatosPublicos](https://github.com/hllinas/DatosPublicos) del dr. Humberto LLinás, disponible en GitHub. 
 
-Esencialmente, se ha preparado el script [`prerrequisitos.R`](https://github.com/jzavalar/DatosPublicos/blob/main/prerrequisitos.R) para que el tutorial [Probabilidad Condicional](https://github.com/jzavalar/DatosPublicos/blob/main/R_Prob_Condicional.Rmd) se compile correctamente y se reproduzca sin errores. Una copia puede encontrarse en [RStudio.cloud](https://posit.cloud/content/6287627).
+Esencialmente, se ha preparado el script [`prerrequisitos.R`](https://github.com/jzavalar/probabilidad/blob/main/codigo/prerrequisitos.R) para que el tutorial [9.5. Probabilidad en R: Probabilidad condicional](https://github.com/jzavalar/probabilidad/blob/main/codigo/9.5_Probabilidad-en-R_Probabilidad-condicional.Rmd) se compile correctamente y se reproduzca sin errores. Una copia puede encontrarse en [RStudio.cloud](https://posit.cloud/content/6287627).
 
 El tutorial referido con anterioridad es parte del capítulo **Probabilidad en R**, que comprende los siguientes subcapítulos:
 
@@ -28,7 +28,7 @@ Los archivos del repositorio original corresponden al directorio `datos` del pro
   - renv (directorio del paquete `renv`)
   - renv.lock (snapshot de `renv`)
 
-- `**codigo**` (directorio) (código .R y .Rmd):
+- `**codigo**` (directorio) (código .R y .Rmd, corresponde a los tutoriales anteriores, pero renombrados):
   - 9.1_Probabilidad-en-R_Conceptos.Rmd
   - 9.2_Probabilidad-en-R_Muestreo.Rmd
   - 9.3_Probabilidad-en-R_Conteo.Rmd
