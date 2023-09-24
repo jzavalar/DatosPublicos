@@ -92,6 +92,7 @@ if (file.exists('./datos/Estudiantes.Rdata')) {
   library(rio)
   
   # lista los archivos de ./datos/
+  print("Archivos de ./datos/")
   list.files(path="./datos/", pattern=NULL, all.files=FALSE,
              full.names=FALSE)
 
@@ -147,7 +148,9 @@ if (file.exists('./datos/Estudiantes.Rdata')) {
   }
   # Borrar el ambiente de la memoria
   rm(list = ls())
+  
   # lista los archivos de datos
+  print("Archivos de ./datos/")
   list.files(path="./datos/", pattern=NULL, all.files=FALSE,
              full.names=FALSE)
   
