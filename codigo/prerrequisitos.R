@@ -8,51 +8,58 @@
 # Telegram: https://t.me/jzavalar
 # Fecha: septiembre de 2023
 
-# instalar el paquete prob
-# checar si prob está instalado
+# Se puede usar uno de los tres métodos siguientes, 
+# resolviendo los errores al instalar los archivos que se requieran
+
+# Metodo 1:
+# Instalar el paquete prob
+# Checar si prob está instalado
 if (!require("prob")) {
-  # instalar paquete remotes
+  # Instalar paquete 'remotes'
   if (!require("remotes")) {
     install.packages("remotes")
   }
-  # instalar dependencias y paquete prob
-  # a partir de la fuente: 
-  # https://community.rstudio.com/t/installation-prob-package/157668/2
+  # Instalar dependencias y paquete 'prob'
+  # fuente: https://community.rstudio.com/t/installation-prob-package/157668/2
   remotes::install_github("cran/fOptions")
   remotes::install_github("cran/fAsianOptions")
+  
   remotes::install_github("cran/prob")
 }
-# alternativamente, ejecutar el siguiente código:
-install.packages("remotes")
-remotes::install_github("cran/fOptions", force = TRUE)
-remotes::install_github("cran/fAsianOptions", force = TRUE)
-remotes::install_github("cran/prob", force = TRUE)
 
 
-# instalar el paquete repmis
+# Instalar el paquete 'repmis'
 if (!require("repmis")) {
   if (!require("devtools")) {
     install.packages("devtools",force=TRUE)
   } else {
-    # fuente: https://www.r-project.org/nosvn/pandoc/repmis.html
+    # Fuente: https://www.r-project.org/nosvn/pandoc/repmis.html
     devtools::install_github('christophergandrud/repmis')
   }
 }
-# Alternativamente usar el siguiente código:
-install.packages("devtools",force=TRUE)
-devtools::install_github('christophergandrud/repmis')
 
 
-# instalar el paquete rio
+# Instalar el paquete 'rio'
 if (!require("rio")) {
-  # instalar paquete
+  # Instalar paquete y los formatos
   install.packages("rio")
   rio::install_formats()
 }
-# Alternativamente usar el siguiente código:
+
+
+# Metodo 2:
+# Alternativamente, ejecutar el siguiente código, linea por linea:
+install.packages("remotes")
+remotes::install_github("cran/fOptions")
+remotes::install_github("cran/fAsianOptions")
+remotes::install_github("cran/prob")
+install.packages("devtools")
+devtools::install_github('christophergandrud/repmis')
 install.packages("rio")
 rio::install_formats()
 
+
+# Metodo 3: Paquete 'renv'
 # instalar el paquete renv, solo por primera vez
 library(renv)
 if (!require("renv")) {
@@ -61,11 +68,14 @@ if (!require("renv")) {
 # alternativamente, ejecutar el siguiente código:
 install.packages("renv")
 library(renv)
+renv::status()
+renv::init()
 renv::activate()
+
 renv::install(packages="remotes")
-renv::install("cran/fOptions")
-renv::install("cran/fAsianOptions")
-renv::install("cran/prob")
+renv::install(packages="cran/fOptions")
+renv::install(packages="cran/fAsianOptions")
+renv::install(packages="cran/prob")
 renv::install(packages="devtools")
 renv::install(packages="christophergandrud/repmis")
 renv::install(packages="rio")
@@ -74,14 +84,15 @@ rio::install_formats()
 
 
 # Preparación de los datos
-# preparar los datos de manera local
+# Preparar los datos de manera local
 if (file.exists('./Estudiantes.Rdata')) {
-} else {  # cargar datos
+} else {  
   # cargar paquete rio
   library(rio)
   
   # archivo de datos, en Internet
-  url_data <- "https://github.com/hllinas/DatosPublicos/blob/main/Estudiantes.Rdata?raw=false"
+  url_Estudiantes <- "https://github.com/hllinas/DatosPublicos/blob/main/Estudiantes.Rdata?raw=false"
+  url_hsbdemo <- "https://github.com/hllinas/DatosPublicos/blob/main/hsbdemo.Rdata?raw=false"
   
   # copiar archivo de Internet al directorio local
   # nombres de los archivos
@@ -89,7 +100,11 @@ if (file.exists('./Estudiantes.Rdata')) {
   archivo_csv <- './Estudiantes.csv'
   archivo_clip <- './clipboard'
   
-  # convertir a Rdata
+  # Probar cargar datos
+  Estudiantes <- import(url_Estudiantes)
+  hsbdemo <- import(url_hsbdemo)
+
+  # convertir archivo Estudiantes.Rdata a csv
   convert(url_data,archivo_rdata)
   # convertir a csv
   convert(url_data,archivo_csv)
@@ -101,6 +116,9 @@ if (file.exists('./Estudiantes.Rdata')) {
   } else {
     print('Archivo no encontrado :')
   }
+  # Borrar dataframes de la memoria
+  rm(Estudiantes)
+  rm(hsbdemo)
 }
 
 
