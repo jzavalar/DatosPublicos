@@ -44,6 +44,9 @@ Los archivos del repositorio original corresponden al directorio `datos` del pro
   - Estudiantes_diccionario-de-datos.pdf (diccionario de datos) (renombrado del original: `Estudiantes(Descripcion).pdf`)
   - hsbdemo.Rdata (datos) (original)
 
+El proyecto está configurado para que funcione con [GitHub](https://github.com/) y [GitHub Desktop](https://desktop.github.com/). Por lo que la mejor forma de probarlo es hacer una copia del repositorio con Git.
+
+Actualemnte está en proceso de recodificación de los tutoriales.
   
 ## 3. Script
 

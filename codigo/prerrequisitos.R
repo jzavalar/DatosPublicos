@@ -94,6 +94,7 @@ if (file.exists('./Estudiantes.Rdata')) {
   # archivo de datos, en Internet
   url_Estudiantes <- "https://github.com/hllinas/DatosPublicos/blob/main/Estudiantes.Rdata?raw=false"
   url_hsbdemo <- "https://github.com/hllinas/DatosPublicos/blob/main/hsbdemo.Rdata?raw=false"
+  #url_hsbdemo_ucla <- "http://www.ats.ucla.edu/stat/data/hsbdemo.dta?raw=false"
   
   # copiar archivo de Internet al directorio local
   # nombres de los archivos
@@ -104,6 +105,7 @@ if (file.exists('./Estudiantes.Rdata')) {
   # Probar cargar datos
   Estudiantes <- import(url_Estudiantes)
   hsbdemo <- import(url_hsbdemo)
+  #hsbdemo_ucla <- import(url_hsbdemo_ucla)
 
   # convertir archivo Estudiantes.Rdata a csv
   convert(url_data,archivo_rdata)
