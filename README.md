@@ -43,6 +43,7 @@ Los archivos del repositorio original corresponden al directorio `datos` del pro
   - clipboard (archivo CSV copia del original) (creado por el script)
   - Estudiantes_diccionario-de-datos.pdf (diccionario de datos) (renombrado del original: `Estudiantes(Descripcion).pdf`)
   - hsbdemo.Rdata (datos) (original)
+  - hsbdemo_diccionario-de-datos.md (diccionario de datos)
 
 El proyecto está configurado para que funcione con [GitHub](https://github.com/) y [GitHub Desktop](https://desktop.github.com/). Por lo que la mejor forma de probarlo es hacer una copia del repositorio con Git.
 
