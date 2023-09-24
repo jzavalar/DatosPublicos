@@ -80,7 +80,8 @@ renv::install(packages="devtools")
 renv::install(packages="christophergandrud/repmis")
 renv::install(packages="rio")
 rio::install_formats()
-
+renv::install(packages="rmarkdown")
+renv::install(packages="knitr")
 
 
 # Preparación de los datos

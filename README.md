@@ -28,16 +28,16 @@ Los archivos del repositorio original corresponden al directorio `datos` del pro
   - renv (directorio del paquete `renv`)
   - renv.lock (snapshot de `renv`)
 
-- `**codigo**` (directorio) (código .R y .Rmd, corresponde a los tutoriales anteriores, pero renombrados):
+- **`codigo`** (directorio) (código .R y .Rmd, corresponde a los tutoriales anteriores, pero renombrados):
   - 9.1_Probabilidad-en-R_Conceptos.Rmd
   - 9.2_Probabilidad-en-R_Muestreo.Rmd
   - 9.3_Probabilidad-en-R_Conteo.Rmd
   - 9.4_Probabilidad-en-R_Probabilidad-clasica.Rmd
   - 9.5_Probabilidad-en-R_Probabilidad-condicional.Rmd
-  - `**imagenes**` (directorio de imagenes requeridas el los archivos anteriores)
+  - **`imagenes`** (directorio de imagenes requeridas el los archivos anteriores)
   - prerrequisitos.R (script)  
 
-- `**datos**` (directorio de datos) (copia del repositorio del autor, con algunos archivos nuevos o actualizados):
+- **`datos`** (directorio de datos) (copia del repositorio del autor, con algunos archivos nuevos o actualizados):
   - Estudiantes.RData (datos) (original)
   - Estudiantes.csv (copia CSV copia del original) (creado por el script)
   - clipboard (archivo CSV copia del original) (creado por el script)
@@ -45,9 +45,9 @@ Los archivos del repositorio original corresponden al directorio `datos` del pro
   - hsbdemo.Rdata (datos) (original)
 
   
-## 3. Script `prerrequisitos.R`
+## 3. Script
 
-El script tiene dos partes. La primera prepara el ambiente con los paquetes que requiere con uno de los tres métodos y la segunda prepara los archivos de datos requeridos. 
+El script [`prerrequisitos.R`](https://github.com/jzavalar/probabilidad/blob/main/codigo/prerrequisitos.R) tiene dos partes. La primera prepara el ambiente con los paquetes que requiere con uno de los tres métodos y la segunda prepara los archivos de datos requeridos. 
 
 ### 3.1. Preparación del ambiente 
 
