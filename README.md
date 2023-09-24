@@ -40,12 +40,13 @@ Los archivos del repositorio original corresponden al directorio `datos` del pro
 - **`datos`** (directorio de datos) (copia del repositorio del autor, con algunos archivos nuevos o actualizados):
   - Estudiantes.RData (datos) (original)
   - Estudiantes.csv (copia CSV copia del original) (creado por el script)
-  - clipboard (archivo CSV copia del original) (creado por el script)
-  - Estudiantes_diccionario-de-datos.pdf (diccionario de datos) (renombrado del original: `Estudiantes(Descripcion).pdf`) 
-  - hsbdemo.Rdata (datos) (original del repositorio) 
-  - hsbdemo.dta (datos) (creado por el script)
+  - clipboard (datos) (archivo CSV copia de Estudiantes.csv, creado por el script)
+  - Estudiantes_diccionario-de-datos.pdf (diccionario de datos) (renombrado de Estudiantes(Descripcion).pdf)
   - hsbdemo_diccionario-de-datos.md (diccionario de datos)
-  - hsbraw.csv (datos) (creado por el script) (copia transformada de hsbdemo.dta)
+  - hsbdemo.dta (datos) (original, copiado por el script)
+  - hsbdemo.Rdata (datos) (original del repositorio) 
+  - hsbraw.csv (datos) (original, copia transformada de hsbdemo.dta, copiado por el script)
+  
 El proyecto está configurado para que funcione con [GitHub](https://github.com/) y [GitHub Desktop](https://desktop.github.com/). Por lo que la mejor forma de probarlo es hacer una copia del repositorio con Git.
 
 Actualmente está en proceso de recodificación de los tutoriales.

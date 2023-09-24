@@ -91,7 +91,11 @@ if (file.exists('./datos/Estudiantes.Rdata')) {
   # cargar paquete rio
   library(rio)
   
-  # archivo de datos, en Internet
+  # lista los archivos de ./datos/
+  list.files(path="./datos/", pattern=NULL, all.files=FALSE,
+             full.names=FALSE)
+
+    # archivo de datos, en Internet
   url_Estudiantes <- "https://github.com/hllinas/DatosPublicos/blob/main/Estudiantes.Rdata?raw=false"
   url_hsbdemo <- "https://github.com/hllinas/DatosPublicos/blob/main/hsbdemo.Rdata?raw=false"
 
