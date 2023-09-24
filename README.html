@@ -396,20 +396,20 @@ forma:</p>
 <li>renv (directorio del paquete <code>renv</code>)</li>
 <li>renv.lock (snapshot de <code>renv</code>)</li>
 </ul></li>
-<li><code>**codigo**</code> (directorio) (código .R y .Rmd, corresponde
-a los tutoriales anteriores, pero renombrados):
+<li><strong><code>codigo</code></strong> (directorio) (código .R y .Rmd,
+corresponde a los tutoriales anteriores, pero renombrados):
 <ul>
 <li>9.1_Probabilidad-en-R_Conceptos.Rmd</li>
 <li>9.2_Probabilidad-en-R_Muestreo.Rmd</li>
 <li>9.3_Probabilidad-en-R_Conteo.Rmd</li>
 <li>9.4_Probabilidad-en-R_Probabilidad-clasica.Rmd</li>
 <li>9.5_Probabilidad-en-R_Probabilidad-condicional.Rmd</li>
-<li><code>**imagenes**</code> (directorio de imagenes requeridas el los
-archivos anteriores)</li>
+<li><strong><code>imagenes</code></strong> (directorio de imagenes
+requeridas el los archivos anteriores)</li>
 <li>prerrequisitos.R (script)</li>
 </ul></li>
-<li><code>**datos**</code> (directorio de datos) (copia del repositorio
-del autor, con algunos archivos nuevos o actualizados):
+<li><strong><code>datos</code></strong> (directorio de datos) (copia del
+repositorio del autor, con algunos archivos nuevos o actualizados):
 <ul>
 <li>Estudiantes.RData (datos) (original)</li>
 <li>Estudiantes.csv (copia CSV copia del original) (creado por el
@@ -420,14 +420,20 @@ script)</li>
 (renombrado del original:
 <code>Estudiantes(Descripcion).pdf</code>)</li>
 <li>hsbdemo.Rdata (datos) (original)</li>
+<li>hsbdemo.dta (datos) (creado por el script)</li>
+<li>hsbdemo_diccionario-de-datos.md (diccionario de datos)</li>
 </ul></li>
 </ul>
+<p>El proyecto está configurado para que funcione con <a href="https://github.com/">GitHub</a> y <a href="https://desktop.github.com/">GitHub Desktop</a>. Por lo que la
+mejor forma de probarlo es hacer una copia del repositorio con Git.</p>
+<p>Actualmente está en proceso de recodificación de los tutoriales.</p>
 </div>
-<div id="script-prerrequisitos.r" class="section level2">
-<h2>3. Script <code>prerrequisitos.R</code></h2>
-<p>El script tiene dos partes. La primera prepara el ambiente con los
-paquetes que requiere con uno de los tres métodos y la segunda prepara
-los archivos de datos requeridos.</p>
+<div id="script" class="section level2">
+<h2>3. Script</h2>
+<p>El script <a href="https://github.com/jzavalar/probabilidad/blob/main/codigo/prerrequisitos.R"><code>prerrequisitos.R</code></a>
+tiene dos partes. La primera prepara el ambiente con los paquetes que
+requiere con uno de los tres métodos y la segunda prepara los archivos
+de datos requeridos.</p>
 <div id="preparación-del-ambiente" class="section level3">
 <h3>3.1. Preparación del ambiente</h3>
 <p>Si durante la instalación de algunos paquetes exitieran errores de

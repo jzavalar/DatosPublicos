@@ -43,19 +43,20 @@ Los archivos del repositorio original corresponden al directorio `datos` del pro
   - clipboard (archivo CSV copia del original) (creado por el script)
   - Estudiantes_diccionario-de-datos.pdf (diccionario de datos) (renombrado del original: `Estudiantes(Descripcion).pdf`)
   - hsbdemo.Rdata (datos) (original)
+  - hsbdemo.dta (datos) (creado por el script)
   - hsbdemo_diccionario-de-datos.md (diccionario de datos)
 
 El proyecto está configurado para que funcione con [GitHub](https://github.com/) y [GitHub Desktop](https://desktop.github.com/). Por lo que la mejor forma de probarlo es hacer una copia del repositorio con Git.
 
-Actualemnte está en proceso de recodificación de los tutoriales.
+Actualmente está en proceso de recodificación de los tutoriales.
   
 ## 3. Script
 
-El script [`prerrequisitos.R`](https://github.com/jzavalar/probabilidad/blob/main/codigo/prerrequisitos.R) tiene dos partes. La primera prepara el ambiente con los paquetes que requiere con uno de los tres métodos y la segunda prepara los archivos de datos requeridos. 
+El script [`prerrequisitos.R`](https://github.com/jzavalar/probabilidad/blob/main/codigo/prerrequisitos.R) tiene dos partes. La primera parte prepara el ambiente con los paquetes que requiere con uno de los tres métodos incluidos y la segunda parte prepara los archivos de datos requeridos. 
 
 ### 3.1. Preparación del ambiente 
 
-Si durante la instalación de algunos paquetes exitieran errores de compilación, con el menú `Packages` -> `Install` -> `paquetes` o con el script, se deben instalar los archivos que se requieran, según el sistema operativo que esté usando. Por ejemplo, en Fedora, se instalaron siguientes archivos, como sigue desde la `Terminal`:
+Si durante la instalación de algunos paquetes exitieran errores de compilación, con el menú `Packages` -> `Install` -> `paquetes` o con el script, se deben instalar los archivos que se requieran, según el reporte de color rojo y según el sistema operativo que esté usando. Por ejemplo, en Fedora, se instalaron siguientes archivos, como sigue desde la `Terminal` en RStudio:
 
 ```
 $ sudo dnf install libcurl-devel
@@ -70,6 +71,5 @@ En este caso se usó el Método 3, con la instalación del paquete `renv` para q
 Luego, el script usa el archivo de datos [Estudiantes.Rdata](https://github.com/hllinas/DatosPublicos/blob/main/Estudiantes.Rdata) del autor como base y crea los otros archivos de datos que requieren los tutoriales, para su funcionamiento, mediante el paquete `rio`.
 
 Supongo que, con algunas correcciones menores, todos los demás [tutoriales del dr. LLinás en RPubs](https://rpubs.com/hllinas/) que requieran los datos de este repositorio, funcionarán correctamente. 
-
 
 [J. Zavala](https://t.me/jzavalar).
