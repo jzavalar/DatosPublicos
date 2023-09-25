@@ -31,7 +31,7 @@ Departamento de Matemáticas y Estadística, Universidad del Norte (Barranquilla
 
 ### Abstract
 
-La teoría mencionada puede revisarse en el capítulo 2 de mis notas de clase que aparecen en el siguiente documento: [1.1. Estadística básica](https://rpubs.com/hllinas/R_NotasClase). En [Rpubs:: toc](https://rpubs.com/hllinas/toc) se pueden ver otros documentos de posible interés.
+La teoría mencionada puede revisarse en el capítulo 2 de mis notas de clase que aparecen en el siguiente documento: [1.1. Estadística básica](https://rpubs.com/hllinas/R_NotasClase). En [Rpubs:: toc](https://rpubs.com/hllinas/toc) se pueden ver otros documentos de posible interés. 
 
 ### 0 Preparación del entorno
 
