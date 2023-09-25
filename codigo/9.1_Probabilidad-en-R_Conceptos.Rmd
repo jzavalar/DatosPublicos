@@ -19,12 +19,11 @@ N.B. Este tutorial corresponde a una versión actualizada del tutorial de refere
 
 # PROBABILIDAD EN R
 ## Experimento, espacio muestral y evento
+
 **Dr. rer. nat. Humberto LLinás Solano**
 Departamento de Matemáticas y Estadística, Universidad del Norte (Barranquilla, Colombia)
 
-[
-
-hllinas@uninorte.edu.co](hllinas@uninorte.edu.co)
+[hllinas@uninorte.edu.co](hllinas@uninorte.edu.co)
 
 [Biographical sketch](https://rpubs.com/hllinas/Bio_Sketch)
 
@@ -36,7 +35,13 @@ La teoría mencionada puede revisarse en el capítulo 2 de mis notas de clase qu
 
 ### 0 Preparación del entorno
 
-Los paquetes `prob` y `repmis` no están disponibles desde CRAN, por lo que requieren un procedimiento alterno de instalación. Por ello, se ha creado el breve script en R titulado [R_Prob_Condicional_prerrequisito.R](https://github.com/jzavalar/DatosPublicos/blob/main/R_Prob_Condicional_prerrequisito.Rmd) que pemite instalarlos y preparar el ambiente para que funcione el tutorial. Ambos paquetes de instalan desde GitHub con el paquete `remotes` y `devtools`. Adicionalmente, se instalan el paquete `rio`, que sirve para preparar los datos de su fuente original, aunque en este repositorio, incluye una copia del repositorio `Datos Publicos` del dr. Humberto LLinás.  (J. Zavala, JZ)
+Los paquetes `prob` y `repmis` no están disponibles desde CRAN, por lo que requieren un procedimiento alterno de instalación. Por ello, se ha creado el breve script en R titulado [R_Prob_Condicional_prerrequisito.R](https://github.com/jzavalar/probabilidad/blob/main/codigo/9.5_Probabilidad-en-R_Probabilidad-condicional.Rmd) que pemite instalarlos y preparar el ambiente para que funcione el tutorial. Ambos paquetes de instalan desde GitHub con el paquete `remotes` y `devtools`. Adicionalmente, se instalan el paquete `rio`, que sirve para preparar los datos de su fuente original, aunque en este repositorio, incluye una copia del repositorio `Datos Publicos` del dr. Humberto LLinás.  
+
+profe J. Zavala (JZ)
+
+```{r}
+library(prob)
+```
 
 
 ### 1 Paquetes
@@ -51,6 +56,7 @@ Para nuestros cálculos, utilizaremos la siguiente librería:
 
 ```{r}
 #A) Para analizar experimentos estadísticos
+library(combinat)
 library(prob)
 ```
 
@@ -59,376 +65,273 @@ library(prob)
 
 Todo experimento se puede clasificar como se ilustra en la figura de abajo:
 
-<img src="/imagenes/figura_9.1.1.png" alt="experimento" width="60 %"/>
+<img src="./imagenes/figura_9.1.1.png" alt="experimento" width="60%"/>
 
 
 ### 3 Espacio muestral
 
-Teóricamente se simbolizará con Ω
+Teóricamente se simbolizará con $\Omega$. Revisaremos algunos ejemplos para encontrar los elementos de este conjunto.
 
-. Revisaremos algunos ejemplos para encontrar los elementos de este conjunto.
-3.0.1 Ejemplo: Lanzar monedas
+#### 3.0.1 Ejemplo: Lanzar monedas
 
 Considere el experimento aleatorio de lanzar n veces una moneda. Los resultados elementales son H (head, cara) y T (tail, sello). Con la librería “prob”, Podemos hallar los elementos del espacio muestral con la función “tosscoin” (lanzamiento de monedas):
 
-tosscoin(1)     #A) Espacio muestral con n=1 lanzamiento de una moneda
+```{r}
+#A) Espacio muestral con n=1 lanzamiento de una moneda
+tosscoin(1)
+```
 
-##   toss1
-## 1     H
-## 2     T
 
-tosscoin(2)     #B) Espacio muestral con n=2 lanzamientos de una moneda
+```{r}
+#B) Espacio muestral con n=2 lanzamientos de una moneda
+tosscoin(2)
+```
 
-##   toss1 toss2
-## 1     H     H
-## 2     T     H
-## 3     H     T
-## 4     T     T
+```{r}
+#C) Espacio muestral con n=3 lanzamientos de una moneda
+tosscoin(3)
+```
 
-tosscoin(3)     #C) Espacio muestral con n=3 lanzamientos de una moneda
+Para determinar el número de elementos que tiene el espacio muestral $\Omega$ y el de la muestra, se puede utilizar la función “dim”:
 
-##   toss1 toss2 toss3
-## 1     H     H     H
-## 2     T     H     H
-## 3     H     T     H
-## 4     T     T     H
-## 5     H     H     T
-## 6     T     H     T
-## 7     H     T     T
-## 8     T     T     T
+```{r}
+#D) Espacio muestral con n=10 lanzamientos de una moneda
+Omega <- tosscoin(10)  
 
-Para determinar el número de elementos que tiene el espacio muestral Ω
+#E) Tamaños de Omega y de la muestra
+dim(Omega)
+```
 
-y el de la muestra, se puede utilizar la función “dim”:
+#### 3.0.2 Ejemplo: Lanzar dados
 
-Omega<- tosscoin(10)  #D) Espacio muestral con n=10 lanzamientos de una moneda
-dim(Omega)            #E) Tamaños de Omega y de la muestra
+Ahora considere el experimento aleatorio de lanzar n veces un dado. Los resultados elementales son 1, 2, 3,4, 5 y 6. Con la librería `prob` podemos hallar los elementos del espacio muestral con la función `rolldie()` (lanzamiento de dados):
 
-## [1] 1024   10
+```{r}
+#F) Espacio muestral con n=2 lanzamientos de un dado
+Omega<- rolldie(2)
+Omega
 
-3.0.2 Ejemplo: Lanzar dados
+#G) Tamaño de la muestra
+dim(Omega)
+```
+### 4 Evento
 
-Ahora considere el experimento aleatorio de lanzar n veces un dado. Los resultados elementales son 1, 2, 3,4, 5 y 6. Con la librería “prob”, Podemos hallar los elementos del espacio muestral con la función “rolldie” (lanzamiento de dados):
+Para obtener un evento de $\Omega$, en R, podemos extraer filas usando el operador [].
 
-Omega<- rolldie(2); Omega    #F) Espacio muestral con n=2 lanzamientos de un dado
+#### 4.0.1 Ejemplo: Lanzar monedas
 
-##    X1 X2
-## 1   1  1
-## 2   2  1
-## 3   3  1
-## 4   4  1
-## 5   5  1
-## 6   6  1
-## 7   1  2
-## 8   2  2
-## 9   3  2
-## 10  4  2
-## 11  5  2
-## 12  6  2
-## 13  1  3
-## 14  2  3
-## 15  3  3
-## 16  4  3
-## 17  5  3
-## 18  6  3
-## 19  1  4
-## 20  2  4
-## 21  3  4
-## 22  4  4
-## 23  5  4
-## 24  6  4
-## 25  1  5
-## 26  2  5
-## 27  3  5
-## 28  4  5
-## 29  5  5
-## 30  6  5
-## 31  1  6
-## 32  2  6
-## 33  3  6
-## 34  4  6
-## 35  5  6
-## 36  6  6
+```{r}
+#A) Espacio muestral: lanzamiento de 3 monedas
+Omega <- tosscoin(3)
+Omega    
 
-dim(Omega)                   #G) Tamaños de Omega y de la muestra
+#B) Tamaño de la muestra: filas x columnas 
+dim(Omega)
 
-## [1] 36  2
+#C) Evento B, las primeras 4 filas
+B<- Omega[1:4, ]
+B
 
-4 Evento
+#D) Evento C, las filas 1 y 4
+C<- Omega[c(1,4),]
+C
+```
 
-Para obtener un evento de Ω
+#### 4.0.2 Ejemplo: Lanzar dados
 
-en R, podemos extraer filas usando el operador [].
-4.0.1 Ejemplo: Lanzar monedas
+```{r}
+#E) Espacio muestral de lanzar 2 dados
+Omega <- rolldie(2)
 
-Omega <- tosscoin(3); Omega    #A) Espacio muestral
+# Lista las primeras 10 líneas 
+head(Omega)
 
-##   toss1 toss2 toss3
-## 1     H     H     H
-## 2     T     H     H
-## 3     H     T     H
-## 4     T     T     H
-## 5     H     H     T
-## 6     T     H     T
-## 7     H     T     T
-## 8     T     T     T
+#F) Tamaño de la muestra
+dim(Omega)
 
-dim(Omega)                     #B) Tamaños de Omega y de la muestra
+#G) Evento G: cojunto para el caso de que 
+# la suma de dos columnas es mayor a 10  
+G <- subset(Omega, X1 + X2 > 10); G
+```
 
-## [1] 8 3
+### 5 Funciones para encontrar subconjuntos
 
-B<- Omega[1:4, ]; B            #C) Evento B
-
-##   toss1 toss2 toss3
-## 1     H     H     H
-## 2     T     H     H
-## 3     H     T     H
-## 4     T     T     H
-
-C<- Omega[c(1,4),]; C          #D) Evento C
-
-##   toss1 toss2 toss3
-## 1     H     H     H
-## 4     T     T     H
-
-4.0.2 Ejemplo: Lanzar dados
-
-Omega <- rolldie(2); head(Omega)          #E) Espacio muestral
-
-##   X1 X2
-## 1  1  1
-## 2  2  1
-## 3  3  1
-## 4  4  1
-## 5  5  1
-## 6  6  1
-
-dim(Omega)                                #F) Tamaños de Omega y de la muestra
-
-## [1] 36  2
-
-G <- subset(Omega, X1 + X2 > 10); G       #G) Evento G
-
-##    X1 X2
-## 30  6  5
-## 35  5  6
-## 36  6  6
-
-5 Funciones para encontrar subconjuntos
-5.1 La función (b %in% a)
+#### 5.1 La función (b %in% a)
 
 Retornará TRUE si el valor de un vector b está en algún lugar dentro de otro vector a.
 
-x <- 1:6          #A)
-y <- 2:4          #B)
-z <- c(2,2,4)     #C)
+```{r}
+#A)
+x <- 1:6
 
-y %in% x          #D)
+#B)
+y <- 2:4
 
-## [1] TRUE TRUE TRUE
+#C)
+z <- c(2,2,4)
 
-x %in% y          #E)
+#D)
+y %in% x
 
-## [1] FALSE  TRUE  TRUE  TRUE FALSE FALSE
+#E)
+x %in% y
 
-x %in% z          #F)
+#F)
+x %in% z
 
-## [1] FALSE  TRUE FALSE  TRUE FALSE FALSE
+```
 
-5.2 La función all(b %in% a)
+#### 5.2 La función all(b %in% a)
 
 La función retornará TRUE si todos los valores del vector b están dentro de otro vector a.
 
-all(y %in% x)          #G)
+```{r}
+#G)
+all(y %in% x)
 
-## [1] TRUE
+#H)
+all(x %in% y)
 
-all(x %in% y)          #H)
+#I)
+all(x %in% z)
+```
 
-## [1] FALSE
-
-all(x %in% z)          #I)
-
-## [1] FALSE
-
-5.3 La función isin(a,b)
+#### 5.3 La función isin(a,b)
 
 La función retornará TRUE si cada elemento de b está presente en el vector a, contando multiplicidades.
 
-isin(y, x)          #J)
+```{r}
+#J)
+isin(y, x)
 
-## [1] FALSE
+#K)
+isin(x, y)
 
-isin(x, y)          #K)
+#L)
+isin(x, y)
+```
 
-## [1] TRUE
 
-isin(x, y)          #L)
-
-## [1] TRUE
-
-5.4 La función isin(a,b) con opción ordered
+#### 5.4 La función isin(a,b) con opción ordered
 
 Hay un argumento opcional que prueba si un elemento del vector b aparece en el a en el mismo orden en que ellos aparecen en b. Por ejemplo:
 
-isin(x, c(2, 3, 4), ordered = TRUE)          #M)
+```{r}
+#M)
+isin(x, c(2, 3, 4), ordered = TRUE)
 
-## [1] TRUE
+#N)
+isin(x, c(3, 2, 4), ordered = TRUE)
+```
 
-isin(x, c(3, 2, 4), ordered = TRUE)          #N)
 
-## [1] FALSE
+#### 5.5 La función isin(a,b) para construir eventos
 
-5.5 La función isin(a,b) para construir eventos
+La función `isin()` se puede aplicar a cada fila del data frama para encontrar el evento deseado. Por ejemplo,
 
-La función “isin” se puede aplicar a cada fila del data frama para encontrar el evento deseado. Por ejemplo,
+```{r}
+#O) Dados, n=3
+Omega <- rolldie(3)
+head(Omega)
 
-Omega <- rolldie(3); head(Omega)          #O) Dados, n=3
+#P) Tamaños de Omega y muestra
+dim(Omega)
 
-##   X1 X2 X3
-## 1  1  1  1
-## 2  2  1  1
-## 3  3  1  1
-## 4  4  1  1
-## 5  5  1  1
-## 6  6  1  1
+#Q) Evento
+A <- subset(Omega, 
+            isin(Omega, c(2, 1), ordered = TRUE))
+A
 
-dim(Omega)                                #P) Tamaños de Omega y muestra
+#R) Tamaños del evento y de la muestra
+dim(A)
 
-## [1] 216   3
+```
 
-A <- subset(Omega, isin(Omega, c(2, 1), ordered = TRUE)); A      #Q) Evento
 
-##     X1 X2 X3
-## 2    2  1  1
-## 7    1  2  1
-## 8    2  2  1
-## 9    3  2  1
-## 10   4  2  1
-## 11   5  2  1
-## 12   6  2  1
-## 14   2  3  1
-## 20   2  4  1
-## 26   2  5  1
-## 32   2  6  1
-## 38   2  1  2
-## 74   2  1  3
-## 110  2  1  4
-## 146  2  1  5
-## 182  2  1  6
-
-dim(A)          #R) Tamaños del evento y de la muestra
-
-## [1] 16  3
-
-6 Operaciones con conjuntos
+### 6 Operaciones con conjuntos
 
 La tabla de abajo resume las operaciones que se pueden calcular con R:
-Operación 	Código
-Unión (A∪B
-) 	union(A,B)
-Intersección (A∩B
-) 	intersect(A,B)
-Diferencia (A∖B
-) 	setdiff(A,B)
-Igualdad (A=B
-) 	setequal(A,B)
+
+
+$$
+\begin{equation}
+\begin{matrix}
+Operación                   & Código         \\
+Unión: (A \cup B)           & union(A,B)     \\
+Intersección: (A \cap B)    & intersect(A,B) \\
+Diferencia: (A \setminus B) & setdiff(A,B)   \\
+Igualdad: (A = B)           & setequal(A,B)  \\
+\end{matrix}
+\end{equation} 
+$$
 
 Revisemos algunos ejemplos:
 
+```{r}
 Omega <- rolldie(2); head(Omega)
 
-##   X1 X2
-## 1  1  1
-## 2  2  1
-## 3  3  1
-## 4  4  1
-## 5  5  1
-## 6  6  1
+#A) Evento A
+A <- subset(Omega, isin(Omega, c(2, 1), ordered = TRUE))
+A
 
-A <- subset(Omega, isin(Omega, c(2, 1), ordered = TRUE)); A      #A) Evento A
+#B)Evento B
+B <- subset(Omega, isin(Omega, c(1, 2), ordered = FALSE))
+B
 
-##   X1 X2
-## 2  2  1
+#C) Unión
+union(A,B)
 
-B <- subset(Omega, isin(Omega, c(1, 2), ordered = FALSE)); B     #B)Evento B
+#D) Intersección
+intersect(A,B)
 
-##   X1 X2
-## 2  2  1
-## 7  1  2
+#E) Diferencia A-B
+setdiff(A,B)
 
-union(A,B)          #C) Unión
+#F) Diferencia B-A
+setdiff(B,A)
 
-##   X1 X2
-## 2  2  1
-## 7  1  2
+#G) Igualdad
+setequal(A,B)
+```
 
-intersect(A,B)      #D) Intersección
 
-##   X1 X2
-## 2  2  1
-
-setdiff(A,B)        #E) Diferencia A-B
-
-## [1] X1 X2
-## <0 rows> (or 0-length row.names)
-
-setdiff(B,A)        #F) Diferencia B-A
-
-##   X1 X2
-## 7  1  2
-
-setequal(A,B)       #G) Igualdad
-
-## [1] FALSE
-
-7 Ejercicios
+### 7 Ejercicios
 
 Dado el experimento aleatorio, encuentre los elementos de los eventos indicados abajo, el número de elementos que contiene y el tamaño de la muestra. Para ello, debe crear un nuevo documento R Markdown. Explique siempre sus afirmaciones y los códigos utilizados. Interprete los resultados hallados.
 
-    Experimento: Un dado se lanza dos veces.
-        Ω
+1. Experimento: Un dado se lanza dos veces.
+   a. $\Omega$: El espacio muestral.
+   b. Evento B: La suma de los números es 7. Sugerencia: utilizar == para indicar el símbolo de igualdad.
+   c. Evento C: La suma de los números es por lo menos un 11.
+   d. Evento D: La suma de los números es a lo más un 2.
+   e. Evento E: Se obtiene un doble. Sugerencia: utilizar == para indicar el símbolo de igualdad.
+   f. Evento F: No se obtiene un doble. Sugerencia: utilizar != para indicar el símbolo de diferente.
+   g. Unión de B y F.
+   h. Interseción de C y E.
+   i. Diferencia C-F.
+   j. Evento J: Unión de E y F. Verifique en R si J es igual a $\Omega$.
+   k. Intersección de C y D.
+   l. Diferencia de B y D.
+   m. Evento M: Contiene los elementos de la forma (3,4), ordenados. Sugerencia: utilizar la función isin().
+   n. Evento N: Contiene los elementos de la forma (3,4), no ordenados. Sugerencia: utilizar la función isin(). Compare con el evento M.
+   o. Evento O: Uno cualquiera obtenido al aplicar la función corchete.
 
-: El espacio muestral.
-Evento B: La suma de los números es 7. Sugerencia: utilizar == para indicar el símbolo de igualdad.
-Evento C: La suma de los números es por lo menos un 11.
-Evento D: La suma de los números es a lo más un 2.
-Evento E: Se obtiene un doble. Sugerencia: utilizar == para indicar el símbolo de igualdad.
-Evento F: No se obtiene un doble. Sugerencia: utilizar != para indicar el símbolo de diferente.
-Unión de B y F.
-Interseción de C y E.
-Diferencia C-F.
-Evento J: Unión de E y F. Verifique en R si J es igual a Ω
+2. Experimento: Una moneda se lanza cuatro veces.
+   a. $\Omega$: El espacio muestral.
+   b. Evento B: Las primeras 2 observaciones. Utilizar la función corchete.
+   c. Evento C: Las primeras 5 observaciones. Utilizar la función corchete.
+   d. Unión de B y C.
+   e. Intersección de B y C.
+   f. Diferencia B-C.
+   g. Diferencia C-B.
+   h. Evento H: El complemento de B.
+   i. Evento I: El complemento de C.
+   j. Intersección de B y H.
+   k. Evento K: Unión de C y I. Verifique en R si K es igual a $\Omega$.
+   l. Evento L: Salgan 2 caras. Sugerencia: utilizar la función isin().
+   m. Evento M: Salgan 3 caras. Sugerencia: utilizar la función isin().
 
-    .
-    Intersección de C y D.
-    Diferencia de B y D.
-    Evento M: Contiene los elementos de la forma (3,4), ordenados. Sugerencia: utilizar la función isin().
-    Evento N: Contiene los elementos de la forma (3,4), no ordenados. Sugerencia: utilizar la función isin(). Compare con el evento M.
-    Evento O: Uno cualquiera obtenido al aplicar la función corchete.
+### 8 Enlaces y materiales de ayuda
 
-Experimento: Una moneda se lanza cuatro veces.
-
-    Ω
-
-: El espacio muestral.
-Evento B: Las primeras 2 observaciones. Utilizar la función corchete.
-Evento C: Las primeras 5 observaciones. Utilizar la función corchete.
-Unión de B y C.
-Intersección de B y C.
-Diferencia B-C.
-Diferencia C-B.
-Evento H: El complemento de B.
-Evento I: El complemento de C
-Intersección de B y H.
-Evento K: Unión de C y I. Verifique en R si K es igual a Ω
-
-        .
-        Evento L: Salgan 2 caras. Sugerencia: utilizar la función isin().
-        Evento M: Salgan 3 caras. Sugerencia: utilizar la función isin().
-
-8 Enlaces y materiales de ayuda
-
-    IPSUR (Introduction to Probability and Statistics Using R): https://www.nongnu.org/ipsur/
-
-    LLinás, H.; Rojas, C., Estadística descriptiva y distribuciones de probabilidad. Barranquilla: Ediciones Uninorte, 2005.
+1. IPSUR (Introduction to Probability and Statistics Using R): https://www.nongnu.org/ipsur/
+2. LLinás, H.; Rojas, C., *Estadística descriptiva y distribuciones de probabilidad*. Barranquilla: Ediciones Uninorte, 2005.
