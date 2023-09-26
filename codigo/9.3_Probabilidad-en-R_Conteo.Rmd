@@ -17,23 +17,35 @@ knitr::opts_chunk$set(echo = TRUE)
 N.B. Este tutorial corresponde a una versión actualizada del tutorial de referencia del dr. Humberto LLinás, convertido a RMarkdown. Sólo se han actualizado algunos aspectos de Rmarkdown y LaTex, para la reproducción del mismo, sin errores, en 2023, desde RStudio.
 -----------
 
-PROBABILIDAD EN R
-Técnicas de conteo
-Dr. rer. nat. Humberto LLinás Solano
+## PROBABILIDAD EN R
+## Técnicas de conteo
+
+
+**Dr. rer. nat. Humberto LLinás Solano**
 Departamento de Matemáticas y Estadística, Universidad del Norte (Barranquilla, Colombia)
 
-hllinas@uninorte.edu.co
+[hllinas@uninorte.edu.co](hllinas@uninorte.edu.co)
 
-Biographical sketch
+[Biographical sketch](https://rpubs.com/hllinas/Bio_Sketch)
+
 
 26/08/21
 
-Abstract
+### Abstract
 
-La teoría mencionada puede revisarse en el capítulo 2 de mis notas de clase que aparecen en el siguiente documento: 1.1. Estadística básica. En Rpubs:: toc se pueden ver otros documentos de posible interés.
+La teoría mencionada puede revisarse en el capítulo 2 de mis notas de clase que aparecen en el siguiente documento: 1[1.1. Estadística básica](https://rpubs.com/hllinas/R_NotasClase). En [Rpubs:: toc](https://rpubs.com/hllinas/toc) se pueden ver otros documentos de posible interés.
 
-hllinas
-1 Paquetes
+### 0 Preparación del entorno
+
+Los paquetes `prob` y `repmis` no están disponibles desde CRAN, por lo que requieren un procedimiento alterno de instalación. Por ello, se ha creado el breve script en R titulado [R_Prob_Condicional_prerrequisito.R](https://github.com/jzavalar/probabilidad/blob/main/codigo/9.5_Probabilidad-en-R_Probabilidad-condicional.Rmd) que pemite instalarlos y preparar el ambiente para que funcione el tutorial. Ambos paquetes de instalan desde GitHub con el paquete `remotes` y `devtools`. Adicionalmente, se instalan el paquete `rio`, que sirve para preparar los datos de su fuente original, aunque en este repositorio, incluye una copia del repositorio `Datos Publicos` del dr. Humberto LLinás.  
+
+profe J. Zavala (JZ)
+
+```{r}
+library(prob)
+```
+
+### 1 Paquetes
 
 En R podemos encontrar diversas funciones para ello:
 
@@ -43,243 +55,286 @@ En R podemos encontrar diversas funciones para ello:
 
 Para nuestros cálculos, utilizaremos la siguiente librería:
 
-library(prob)   #A) Para contar los elementos de un evento
+```{r}
+#A) Para contar los elementos de un evento
+library(prob)
+```
 
-2 La función “nsamp”
 
-En el paquete “prob”, encontramos esta función. Ella calcula el número de filas en un espacio muestral encontrado por la función “urnsamples”, sin necesidad de listar los elementos del espacio. Los argumentos son:
+### 2 La función nsamp()
 
-    x: Representa la urna desde la cual se va a hacer el muestreo.
-    size: Tamaño de la muestra.
-    replace: TRUE, si es con reemplazo; y FALSE, sin reemplazo.
-    ordered: TRUE, si es con orden; y FALSE, sin orden.
+En el paquete `prob`, encontramos la función `nsamp()`que calcula el número de filas en un espacio muestral encontrado por la función `urnsamples`, sin necesidad de listar los elementos del espacio. Los argumentos son:
 
-3 Muestreo ordenado (permutaciones)
-3.0.1 Definición
+  - `x`: Representa la urna desde la cual se va a hacer el muestreo.
+  - `size`: Tamaño de la muestra.
+  - `replace`: TRUE, si es con reemplazo; y FALSE, sin reemplazo.
+  - `ordered`: TRUE, si es con orden; y FALSE, sin orden.
+
+### 3 Muestreo ordenado (permutaciones)
+#### 3.1 Definición
 
 Recuerde una permutación es un arreglo ordenado de una cantidad finita de objetos distintos. El número de formas en que se puede seleccionar una permutación de k sujetos de una población que tiene n sujetos distinguibles depende el tipo de muestreo.
 
-    Si el muestreo es hecho con reemplazo, el número de permutaciones es:
-    nk
-
-Si el muestreo es hecho sin reemplazo, el número de permutaciones es:
-n!(n−k)!
-
-Si el muestreo es hecho sin reemplazo y n=k
+1. Si el muestreo es hecho con reemplazo, el número de permutaciones es:
+$$
+n^k
+$$
+2. Si el muestreo es hecho sin reemplazo, el número de permutaciones es:
+$$
+\frac{n!}{(n−k)!}
+$$
+3. Si el muestreo es hecho sin reemplazo y $n=k$
 , el número de permutaciones es
+$$
 n!
+$$
 
-El símbolo n!
+El símbolo $n!$ se lee “n factorial” y, en R, es calculado con el comando `factorial(n)`. Algunos valores factoriales son los siguientes:
 
-se lee “n factorial” y, en R, es computado is computed con el comando factorial(n). Algunos valores factoriales son los siguientes:
+* 0!:=1,
+* 1!=1,
+* 2!=2⋅1=2,
+* 3!=3⋅2⋅1=6,
+* 4!=4⋅3⋅2⋅1;=24.
 
-    0!:=1
+#### 3.2 Ejemplo
 
-,
-1!=1
-,
-2!=2⋅1=2
-,
-3!=3⋅2⋅1=6
-,
-4!=4⋅3⋅2⋅1;=24
+Si se le pide a un consumidor que ordene, por orden de preferencia, el sabor de cinco marcas de cerveza, entonces el número de permutaciones que resultan será 5!=120. Con R se puede calcular de dos maneras:
 
-    .
+```{r}
+#A) Factorial
+factorial(5)
 
-3.0.2 Ejemplo
+#B) Sin reemplazo, con orden    
+nsamp(n = 5, k = 5, 
+      replace = FALSE, ordered = TRUE)
+```
 
-Si se le pide a un consumidor que ordene, por orden de preferencia, el sabor de cinco marcas de cerveza, entonces el número de permutaciones que resultan será 5!=120
 
-. Con R se puede calcular de dos maneras:
-
-factorial(5)                   #A) Factorial
-nsamp(n = 5, k = 5, replace = FALSE, ordered = TRUE)    #B) Sin reemplazo, con orden    
-
-3.0.3 Ejemplo
+#### 3.3 Ejemplo
 
 Supongamos que se quiere seleccionar (con orden) una muestra de tamaño 2 de una urna con 3 elementos disponibles. Si es con reemplazo, tendríamos 9 posibilidades, pero, sin reemplazo, solo 6. Con R:
 
-nsamp(n = 3, k = 2, replace = TRUE, ordered = TRUE)     #C) Con reemplazo, con orden
-nsamp(n = 3, k = 2, replace = FALSE, ordered = TRUE)    #D) Sin reemplazo, con orden    
+```{r}
+#C) Con reemplazo, con orden
+nsamp(n = 3, k = 2, 
+      replace = TRUE, ordered = TRUE)
 
-3.0.4 Ejemplo
+#D) Sin reemplazo, con orden    
+nsamp(n = 3, k = 2, 
+      replace = FALSE, ordered = TRUE)
+```
 
-El número de formas diferentes en que se pueden sentar 8 alumnos en una oficina con sólo 5 sillas es 8!(8−5)!=6720
 
-. Con R:
+#### 3.4 Ejemplo
 
-nsamp(n = 8, k = 5, replace = FALSE, ordered = TRUE)     #E) Sin reemplazo, con orden
+El número de formas diferentes en que se pueden sentar 8 alumnos en una oficina con sólo 5 sillas es 8!(8−5)!=6720. Con R:
 
-4 Muestreo no ordenado (combinaciones)
+```{r}
+#E) Sin reemplazo, con orden
+nsamp(n = 8, k = 5, 
+      replace = FALSE, ordered = TRUE)
+```
 
-Recuerde una combinación es un arreglo no ordenado de una cantidad finita de objetos distintos. El número de formas en que se puede seleccionar una combinación de k sujetos de una población que tiene n sujetos distinguibles es:
-Muestreo 	ordered = FALSE
-replace=TRUE 	(n+k−1k)
-replace=FALSE 	(nk)
 
-El símbolo (nk)
+### 4 Muestreo no ordenado (combinaciones)
 
-se llama coeficiente binomial y, en R, es computado con el comando choose(n,k). Se define como
-(nk):=n!k!(n−k)!
-, siendo (n0):=1
-.
-4.0.1 Ejemplo
+Recuerde una combinación es un arreglo no ordenado de una cantidad finita de objetos distintos. El número de formas en que se puede seleccionar una combinación de $k$ sujetos de una población que tiene $n$ sujetos distinguibles es:
 
-Un comité, de 3 mujeres de un grupo de 8, se puede escoger de (83)=56
+$$
+\begin{equation}
+\begin{matrix}
+Muestreo & ordered = FALSE \\
+replace=TRUE & 
+{\left( \begin{array}{ccc}
+n+k−1 \\
+k \\ 
+\end{array} \right)}\\
+replace=FALSE & 
+{\left( \begin{array}{ccc}
+n \\
+k \\ 
+\end{array} \right)}
+\end{matrix}
+\end{equation}
+$$
+El símbolo 
+${\left( \begin{array}{ccc}
+n \\
+k \\ 
+\end{array} \right)}$
 
-maneras. En R se puede calcular de dos maneras:
+se llama coeficiente binomial y, en R, es calculado con el comando `choose(n,k)`. Se define como
+$$
+\begin{equation}
+\begin{matrix}
+{\left( \begin{array}{ccc}
+n \\
+k \\ 
+\end{array} \right)} = 
+\frac{n!}{k!(n-k)!}
+, \: siendo 
+{\left( \begin{array}{ccc}
+n \\
+0 \\ 
+\end{array} \right)} = 1.
+\end{matrix}
+\end{equation}
+$$
 
-choose(8,3)                                             #A) Coeficiente binomial
-nsamp(n = 8, k = 3, replace = FALSE, ordered = FALSE)   #B) Sin reemplazo, sin orden
 
-4.0.2 Ejemplo
+#### 4.1 Ejemplo
+
+Un comité, de 3 mujeres de un grupo de 8, se puede escoger ${\left( \begin{array}{ccc} 8 \\
+3 \\ \end{array} \right)} = 56$. En R se puede calcular de dos maneras:
+
+```{r}
+#A) Coeficiente binomial
+choose(8,3)                                     
+
+#B) Sin reemplazo, sin orden
+nsamp(n = 8, k = 3, 
+      replace = FALSE, ordered = FALSE)
+```
+
+
+#### 4.2 Ejemplo
 
 Supongamos que se quiere seleccionar (sin orden) una muestra de tamaño 2 de una urna con 3 elementos disponibles. Si es sin reemplazo, tendríamos 3 posibilidades, pero, con reemplazo, solo 6. Con R:
 
-nsamp(n = 3, k = 2, replace = FALSE, ordered = FALSE)   #C) Sin reemplazo, sin orden
-nsamp(n = 3, k = 2, replace = TRUE, ordered = FALSE)    #D) Con reemplazo, sin orden
+```{r}
+#C) Sin reemplazo, sin orden
+nsamp(n = 3, k = 2, 
+      replace = FALSE, ordered = FALSE)
 
-5 El teorema fundamental del conteo
+#D) Con reemplazo, sin orden
+nsamp(n = 3, k = 2, 
+      replace = TRUE, ordered = FALSE)
+```
 
-Un beneficio de “nsamp” es podemos obtener un vector de respuestas numéricas (en vez de un solo número) cuando asignamos un vector de valores a n
-, k
+### 5 El teorema fundamental del conteo
 
-, replace, and ordered.
-5.0.1 Ejemplo
+Un beneficio de `nsamp` es que podemos obtener un vector de respuestas numéricas (en vez de un solo número) cuando asignamos un vector de valores a `n`, `k`, `replace` y `ordered`.
+
+#### 5.1 Ejemplo
 
 Cuatro libros distintos de matemáticas, seis diferentes de física y dos diferentes de química se colocan en un estante. Determinar el número de formas distintas de ordenar los 12 libros si los libros de cada asignatura deben estar todos juntos.
 
 SOLUCIÓN:
 
-Los libros de matemáticas pueden ordenarse de 4!=24
-formas, los de física de 6!=720 formas y los de química de 2!=2
+Los libros de matemáticas pueden ordenarse de $4!=24$ formas, los de física de $6!=720$ formas y los de química de $2!=2$ formas. En R:
 
-formas. En R:
-
+```{r}
 M <- factorial(4)    #A) Matemática
-f <- factorial(6)    #B) Física
+M
+F <- factorial(6)    #B) Física
+F
 Q <- factorial(2)    #C) Química
+Q
+```
 
-Los tres grupos se pueden ordenar de 3!=6
+Los tres grupos se pueden ordenar de $3!=6$ formas. En R:
 
-formas. En R:
+```{r}
+#D) Los tres grupos de libros
+G <- factorial(3)    
+G
+```
 
-G <- factorial(3)    #D) Los tres grupos de libros
-
-Por consiguiente, por el teorema fundamental del conteo, el número posible de maneras de ordenar los libros es (los libros de cada asignatura deben estar todos juntos):
+Por consiguiente, por el teorema fundamental del conteo, el número posible de maneras de ordenar los libros es (los libros de cada asignatura deben estar todos juntos): 
+$$
 4!6!2!3!=207.360
-
+$$
 En R:
 
-M*f*Q*G  #E) Permutación buscada
+```{r}
+#E) Permutación buscada
+M*F*Q*G
+```
 
-## [1] 207360
-
-5.0.2 Ejemplo
+#### 5.2 Ejemplo
 
 De un total de 5 matemáticos y 7 físicos se forma un comité de 2 matemáticos y 3 físicos. El objetivo ahora es determinar el número de posible maneras puede formarlo si un físico determinado debe pertenecer al comité. Entonces:
 
 SOLUCIÓN:
 
-Tenemos que 2 matemáticos (de un total de 5) pueden elegirse de (52)=10
-maneras y que 2 físicos restantes (de un total de 6) pueden elegirse de (62)=15
+Tenemos que 2 matemáticos (de un total de 5) pueden elegirse de ${\left( \begin{array}{ccc} 5 \\ 2 \\ \end{array} \right)} = 10$ maneras y que 2 físicos restantes (de un total de 6) pueden elegirse de ${\left( \begin{array}{ccc} 6 \\ 2 \\ \end{array} \right)} = 15$ maneras. En R:
 
-maneras. En R:
+```{r}
+#A) Matemáticos
+M<- choose(5,2)
+M
 
-M<- choose(5,2)     #A) Matemáticos
-F<- choose(6,2)     #B) Físicos
+#B) Físicos
+F<- choose(6,2)
+F
+```
 
-Por consiguiente, el número total de selecciones posibles es 10⋅15=150
+Por consiguiente, el número total de selecciones posibles es $10 \dot 15=150$. En R:
 
-. En R:
+```{r}
+M*F
+#C) Combinación buscada
+```
 
-M*F        #C) Combinación buscada
+### 6 Ejercicios
 
-## [1] 150
-
-6 Ejercicios
-
-Dado el experimento aleatorio, encuentre los elementos de Ω
-
-(el espacio muestral), el número de elementos que contiene y el tamaño de la muestra. Debe utilizar las funciones de esta sección. Crear un nuevo documento R Markdown. Explique siempre sus afirmaciones y los códigos utilizados. Interprete los resultados hallados.
+Dado el experimento aleatorio, encuentre los elementos de $\Omega$ (el espacio muestral), el número de elementos que contiene y el tamaño de la muestra. Debe utilizar las funciones de esta sección. Crear un nuevo documento R Markdown. Explique siempre sus afirmaciones y los códigos utilizados. Interprete los resultados hallados.
 
 NOTA: Al final de la sección 2.2 de la referencia 2 (ver abajo), se pueden revisar más ejercicios.
 
-    Una caja tiene 10 bolas. Se sacan 2 bolas:
+1. Una caja tiene 10 bolas. Se sacan 2 bolas:
+   a. Sin orden y sin reemplazo.
+   b. Con orden y sin reemplazo.
+   c. Sin orden y con reemplazo.
+   d. Con orden y con reemplazo.
 
-        Sin orden y sin reemplazo.
+2. De un total de 8 facturas diferentes, un gerente selecciona 5 con el fin de:
+   a. Ordenarlas en un lugar especifico de su escritorio.
+   b. Colocarlas en un lugar especifico de su escritorio.
 
-        Con orden y sin reemplazo.
+3. Una urna contiene 7 fichas. ¿Cuáles y cuántas son las distintas maneras de seleccionar 2 fichas:
+   a. Sin orden y sin reemplazo.
+   b. Con orden y sin reemplazo.
+   c. Sin orden y con reemplazo.
+   d. Con orden y con reemplazo.
 
-        Sin orden y con reemplazo.
+4. Formar un grupo de tamaño 5 de entre 12 personas.
 
-        Con orden y con reemplazo.
+5. Sentar 6 personas en un sofá que sólo tiene disponible 3 puestos.
 
-    De un total de 8 facturas diferentes, un gerente selecciona 5 con el fin de:
+6. Un consumidor ordena, por orden de preferencia, el sabor de 5 marcas de cerveza.
 
-        Ordenarlas en un lugar especifico de su escritorio.
+7. Formar números de 3 cifras sin repetición con los dígitos 8, 2, 5, 4 y 7.
 
-        Colocarlas en un lugar especifico de su escritorio.
+8. Una pieza de un radio puede ser comprado de cualquiera de 6 proveedores. Se escogen 3 de los 6 proveedores.
 
-    Una urna contiene 7 fichas. ¿Cuáles y cuántas son las distintas maneras de seleccionar 2 fichas:
+9. Cuatro libros distintos de matemáticas, seis diferentes de física y dos diferentes de química se colocan en un estante. ¿De cuántas formas distintas es posible ordenarlos si:
+   a. Los libros de cada asignatura deben estar todos juntos?
+   b. Solamente los libros de matemáticas deben estar juntos?
 
-        Sin orden y sin reemplazo.
+10. En un reinado mundial de la belleza, el jurado debe elegir, de un total de cinco finalistas, a la nueva reina. ¿De cuántas formas se pueden seleccionar:
+    a. Reina y virreina?
+    b. Reina, virreina y primera princesa?
+    c. Dos candidatas para ser reina?
 
-        Con orden y sin reemplazo.
+11. En un estudio médico, los pacientes se clasifican de acuerdo a su peso (liviano, normal, pesado) y estatura (medio bajo, bajo, alto y medio alto). Enumere las diferentes posibilidades en las que un paciente se puede clasificar. ¿Cuántas posibilidades hay?
 
-        Sin orden y con reemplazo.
+12. Si un experimento consiste en lanzar un dado, luego, lanzar una moneda y después escoger al azar una letra de nuestro alfabeto, ¿cuántos elementos tiene el espacio muestral correspondiente? (Suponga que nuestro alfabeto tiene 27 letras).
 
-        Con orden y con reemplazo.
+13. Los estudiantes de un curso de estadística se clasifican como estudiantes de administración, economía o ingeniería; como repitente o no repitente y también como hombre o mujer. Encuentre el número total de clasificaciones posibles para los estudiantes de dicho curso.
 
-    Formar un grupo de tamaño 5 de entre 12 personas.
+14. Una persona ha visto un accidente de tránsito cuyo culpable huyó. A pesar de esto le dice a la Policía que la placa del carro en el que viajaba el culpable tenía tres letras (de las cuales las dos primeras eran C y A) y tres dígitos (de los cuales el último era 0). Encuentre el número máximo de placas de carro que la Policía debe verificar bajo cada una de las siguientes condiciones (nuestro alfabeto tiene 27 letras):
+    a. Las tres letras son diferentes y los tres dígitos también.
+    b. Las tres letras son diferentes y los dos dígitos que faltan son diferentes entre sí.
+    c. La letra que hace falta es diferente de la A y los dígitos que hacen falta son diferentes e impares.
 
-    Sentar 6 personas en un sofá que sólo tiene disponible 3 puestos.
+15. De un total de 6 matemáticos y 8 físicos se forma un comité de 2 matemáticos y 3 físicos. ¿De cuántas maneras puede formarse si:
+    a. . Puede pertenecer a él cualquier matemático y físico?
+    b. Un físico determinado debe pertenecer al comité?
+    c. Dos matemáticos determinados no pueden pertenecer al comité?
 
-    Un consumidor ordena, por orden de preferencia, el sabor de 5 marcas de cerveza.
+### 7 Enlaces y materiales de ayuda
 
-    Formar números de 3 cifras sin repetición con los dígitos 8, 2, 5, 4 y 7.
-
-    Una pieza de un radio puede ser comprado de cualquiera de 6 proveedores. Se escogen 3 de los 6 proveedores.
-
-    Cuatro libros distintos de matemáticas, seis diferentes de física y dos diferentes de química se colocan en un estante. ¿De cuántas formas distintas es posible ordenarlos si:
-
-        Los libros de cada asignatura deben estar todos juntos?
-
-        Solamente los libros de matemáticas deben estar juntos?
-
-    En un reinado mundial de la belleza, el jurado debe elegir, de un total de cinco finalistas, a la nueva reina. ¿De cuántas formas se pueden seleccionar:
-
-        Reina y virreina?
-
-        Reina, virreina y primera princesa?
-
-        Dos candidatas para ser reina?
-
-    En un estudio médico, los pacientes se clasifican de acuerdo a su peso (liviano, normal, pesado) y estatura (medio bajo, bajo, alto y medio alto). Enumere las diferentes posibilidades en las que un paciente se puede clasificar. ¿Cuántas posibilidades hay?
-
-    Si un experimento consiste en lanzar un dado, luego, lanzar una moneda y después escoger al azar una letra de nuestro alfabeto, ¿cuántos elementos tiene el espacio muestral correspondiente? (Suponga que nuestro alfabeto tiene 27 letras).
-
-    Los estudiantes de un curso de estadística se clasifican como estudiantes de administración, economía o ingeniería; como repitente o no repitente y también como hombre o mujer. Encuentre el número total de clasificaciones posibles para los estudiantes de dicho curso.
-
-    Una persona ha visto un accidente de tránsito cuyo culpable huyó. A pesar de esto le dice a la Policía que la placa del carro en el que viajaba el culpable tenía tres letras (de las cuales las dos primeras eran C y A) y tres dígitos (de los cuales el último era 0). Encuentre el número máximo de placas de carro que la Policía debe verificar bajo cada una de las siguientes condiciones (nuestro alfabeto tiene 27 letras):
-
-        Las tres letras son diferentes y los tres dígitos también.
-
-        Las tres letras son diferentes y los dos dígitos que faltan son diferentes entre sí.
-
-        La letra que hace falta es diferente de la A y los dígitos que hacen falta son diferentes e impares.
-
-    De un total de 6 matemáticos y 8 físicos se forma un comité de 2 matemáticos y 3 físicos. ¿De cuántas maneras puede formarse si:
-
-        Puede pertenecer a él cualquier matemático y físico?
-
-        Un físico determinado debe pertenecer al comité?
-
-        Dos matemáticos determinados no pueden pertenecer al comité?
-
-7 Enlaces y materiales de ayuda
-
-    IPSUR (Introduction to Probability and Statistics Using R): https://www.nongnu.org/ipsur/
-
-    LLinás, H.; Rojas, C., Estadística descriptiva y distribuciones de probabilidad. Barranquilla: Ediciones Uninorte, 2005.
-
+1. IPSUR (Introduction to Probability and Statistics Using R): https://www.nongnu.org/ipsur/
+2. LLinás, H.; Rojas, C., *Estadística descriptiva y distribuciones de probabilidad*. Barranquilla: Ediciones Uninorte, 2005.

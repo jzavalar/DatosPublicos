@@ -16,23 +16,35 @@ knitr::opts_chunk$set(echo = TRUE)
 N.B. Este tutorial corresponde a una versión actualizada del tutorial de referencia del dr. Humberto LLinás, convertido a RMarkdown. Sólo se han actualizado algunos aspectos de Rmarkdown y LaTex, para la reproducción del mismo, sin errores, en 2023, desde RStudio.
 -----------
 
-PROBABILIDAD EN R
-Muestreo desde una urna
-Dr. rer. nat. Humberto LLinás Solano
+# PROBABILIDAD EN R
+## Muestreo desde una urna
+
+
+**Dr. rer. nat. Humberto LLinás Solano**
 Departamento de Matemáticas y Estadística, Universidad del Norte (Barranquilla, Colombia)
 
-hllinas@uninorte.edu.co
+[hllinas@uninorte.edu.co](hllinas@uninorte.edu.co)
 
-Biographical sketch
+[Biographical sketch](https://rpubs.com/hllinas/Bio_Sketch)
 
 26/08/21
 
-Abstract
+### Abstract
 
-La teoría mencionada puede revisarse en el capítulo 2 de mis notas de clase que aparecen en el siguiente documento: 1.1. Estadística básica. En Rpubs:: toc se pueden ver otros documentos de posible interés.
+La teoría mencionada puede revisarse en el capítulo 2 de mis notas de clase que aparecen en el siguiente documento: [1.1. Estadística básica](https://rpubs.com/hllinas/R_NotasClase). En [Rpubs:: toc](https://rpubs.com/hllinas/toc) se pueden ver otros documentos de posible interés.
 
-hllinas
-1 Paquetes
+### 0 Preparación del entorno
+
+Los paquetes `prob` y `repmis` no están disponibles desde CRAN, por lo que requieren un procedimiento alterno de instalación. Por ello, se ha creado el breve script en R titulado [R_Prob_Condicional_prerrequisito.R](https://github.com/jzavalar/probabilidad/blob/main/codigo/9.5_Probabilidad-en-R_Probabilidad-condicional.Rmd) que pemite instalarlos y preparar el ambiente para que funcione el tutorial. Ambos paquetes de instalan desde GitHub con el paquete `remotes` y `devtools`. Adicionalmente, se instalan el paquete `rio`, que sirve para preparar los datos de su fuente original, aunque en este repositorio, incluye una copia del repositorio `Datos Publicos` del dr. Humberto LLinás.  
+
+profe J. Zavala (JZ)
+
+```{r}
+library(prob)
+```
+
+
+### 1 Paquetes
 
 En R podemos encontrar diversas funciones para ello:
 
@@ -42,121 +54,112 @@ En R podemos encontrar diversas funciones para ello:
 
 Para nuestros cálculos, utilizaremos la siguiente librería:
 
-library(prob)   #A) Para los modelos de urna
+```{r}
+#A) Para los modelos de urna
+library(prob)
+```
 
-2 La función “urnsamples”
+### 2 La función “urnsamples”
 
-El paquete “prob” realiza el muestreo de urnas con la función “urnsamples”, que tiene los siguientes argumentos:
+El paquete `prob` realiza el muestreo de urnas con la función `urnsamples()`, que tiene los siguientes argumentos:
 
-    x: Representa la urna desde la cual se va a hacer el muestreo.
-    size: Tamaño de la muestra.
-    replace: TRUE, si es con reemplazo; y FALSE, sin reemplazo.
-    ordered: TRUE, si es con orden; y FALSE, sin orden.
+   - x: Representa la urna desde la cual se va a hacer el muestreo.
+   - size: Tamaño de la muestra.
+   - replace: TRUE, si es con reemplazo; y FALSE, sin reemplazo.
+   - ordered: TRUE, si es con orden; y FALSE, sin orden.
 
-3 Muestreo con orden y con reemplazo
+### 3 Muestreo con orden y con reemplazo
 
 Supongamos que tenemos una caja con tres (3) elementos, etiquetados con 1, 2 y 3, respectivamente y que vamos a seleccionar una muestra de tamaño 2 de la caja (con orden y con reemplazo).
 
-urnsamples(1:3, size = 2, ordered = TRUE, replace = TRUE)    #A) Con orden y con reemplazo
-
-##   X1 X2
-## 1  1  1
-## 2  2  1
-## 3  3  1
-## 4  1  2
-## 5  2  2
-## 6  3  2
-## 7  1  3
-## 8  2  3
-## 9  3  3
+```{r}
+#A) Con orden y con reemplazo
+urnsamples(1:3, 
+           size = 2, 
+           ordered = TRUE, 
+           replace = TRUE)
+```
 
 Este experimento es equivalente a lanzar dos veces un dado de 3 caras, lo que podríamos haber logrado con:
 
-rolldie (2, nsides = 3)      #B) Dado de tres caras
+```{r}
+#B) Dado de tres caras
+rolldie (2, 
+         nsides = 3)
+```
 
-4 Muestreo con orden y sin reemplazo
+
+### 4 Muestreo con orden y sin reemplazo
 
 Supongamos que tenemos una caja con tres (3) elementos, etiquetados con 1, 2 y 3, respectivamente y que vamos a seleccionar una muestra de tamaño 2 de la caja (con orden y sin reemplazo).
 
-urnsamples(1:3, size = 2, ordered = TRUE, replace = FALSE)    #C) Con orden y sin reemplazo
+```{r}
+#C) Con orden y sin reemplazo
+urnsamples(1:3, 
+           size = 2, 
+           ordered = TRUE, 
+           replace = FALSE)
+```
 
-##   X1 X2
-## 1  1  2
-## 2  2  1
-## 3  1  3
-## 4  3  1
-## 5  2  3
-## 6  3  2
-
-5 Muestreo sin orden y con reemplazo
+### 5 Muestreo sin orden y con reemplazo
 
 Supongamos que tenemos una caja con tres (3) elementos, etiquetados con 1, 2 y 3, respectivamente y que vamos a seleccionar una muestra de tamaño 2 de la caja (sin orden y con reemplazo).
 
-urnsamples(1:3, size = 2, ordered = FALSE, replace = TRUE)     #D) Sin orden y con reemplazo
+```{r}
+#D) Sin orden y con reemplazo
+urnsamples(1:3, 
+           size = 2, 
+           ordered = FALSE, 
+           replace = TRUE)
+```
 
-##   X1 X2
-## 1  1  1
-## 2  1  2
-## 3  1  3
-## 4  2  2
-## 5  2  3
-## 6  3  3
 
-6 Muestreo sin orden y sin reemplazo
+### 6 Muestreo sin orden y sin reemplazo
 
 Supongamos que tenemos una caja con tres (3) elementos, etiquetados con 1, 2 y 3, respectivamente y que vamos a seleccionar una muestra de tamaño 2 de la caja (con orden y sin reemplazo).
 
-urnsamples(1:3, size = 2, ordered = FALSE, replace = FALSE)     #E) Sin orden y con reemplazo
+```{r}
+#E) Sin orden y con reemplazo
+urnsamples(1:3, 
+           size = 2, 
+           ordered = FALSE, 
+           replace = FALSE)
+```
 
-##   X1 X2
-## 1  1  2
-## 2  1  3
-## 3  2  3
 
-7 Ejercicios
+### 7 Ejercicios
 
-Dado el experimento aleatorio, encuentre los elementos de Ω
+1. Dado el experimento aleatorio, encuentre los elementos de $\Omega$ (el espacio muestral), el número de elementos que contiene y el tamaño de la muestra. Debe utilizar las funciones de esta sección. Crear un nuevo documento R Markdown. Explique siempre sus afirmaciones y los códigos utilizados. Interprete los resultados hallados.
 
-(el espacio muestral), el número de elementos que contiene y el tamaño de la muestra. Debe utilizar las funciones de esta sección. Crear un nuevo documento R Markdown. Explique siempre sus afirmaciones y los códigos utilizados. Interprete los resultados hallados.
+2. Una caja tiene 10 bolas. Se sacan 2 bolas:
 
-    Una caja tiene 10 bolas. Se sacan 2 bolas:
+   a. Sin orden y sin reemplazo.
+   b. Con orden y sin reemplazo.
+   c. Sin orden y con reemplazo.
+   d. Con orden y con reemplazo.
 
-        Sin orden y sin reemplazo.
+3. De un total de 8 facturas diferentes, un gerente selecciona 5 con el fin de:
 
-        Con orden y sin reemplazo.
+   a. Ordenarlas en un lugar especifico de su escritorio.
+   b. Colocarlas en un lugar especifico de su escritorio.
 
-        Sin orden y con reemplazo.
+3. Una urna contiene 7 fichas. ¿Cuáles y cuántas son las distintas maneras de seleccionar 2 fichas:
+   a. Sin orden y sin reemplazo.
+   b. Con orden y sin reemplazo.
+   c. Sin orden y con reemplazo.
+   d. Con orden y con reemplazo.
 
-        Con orden y con reemplazo.
+4. Formar un grupo de tamaño 5 de entre 12 personas.
 
-    De un total de 8 facturas diferentes, un gerente selecciona 5 con el fin de:
+5. Sentar 6 personas en un sofá que sólo tiene disponible 3 puestos.
 
-        Ordenarlas en un lugar especifico de su escritorio.
+6. Un consumidor ordena, por orden de preferencia, el sabor de 5 marcas de cerveza.
 
-        Colocarlas en un lugar especifico de su escritorio.
+7. Formar números de 3 cifras sin repetición con los dígitos 8, 2, 5, 4 y 7.
 
-    Una urna contiene 7 fichas. ¿Cuáles y cuántas son las distintas maneras de seleccionar 2 fichas:
+8. Una pieza de un radio puede ser comprado de cualquiera de 6 proveedores. Se escogen 3 de los 6 proveedores.
 
-        Sin orden y sin reemplazo.
+### 8 Enlaces y materiales de ayuda
 
-        Con orden y sin reemplazo.
-
-        Sin orden y con reemplazo.
-
-        Con orden y con reemplazo.
-
-    Formar un grupo de tamaño 5 de entre 12 personas.
-
-    Sentar 6 personas en un sofá que sólo tiene disponible 3 puestos.
-
-    Un consumidor ordena, por orden de preferencia, el sabor de 5 marcas de cerveza.
-
-    Formar números de 3 cifras sin repetición con los dígitos 8, 2, 5, 4 y 7.
-
-    Una pieza de un radio puede ser comprado de cualquiera de 6 proveedores. Se escogen 3 de los 6 proveedores.
-
-8 Enlaces y materiales de ayuda
-
-    IPSUR (Introduction to Probability and Statistics Using R): https://www.nongnu.org/ipsur/
-
-    LLinás, H.; Rojas, C., Estadística descriptiva y distribuciones de probabilidad. Barranquilla: Ediciones Uninorte, 2005.
+1. IPSUR (Introduction to Probability and Statistics Using R): https://www.nongnu.org/ipsur/
+2. LLinás, H.; Rojas, C., *Estadística descriptiva y distribuciones de probabilidad*. Barranquilla: Ediciones Uninorte, 2005.
